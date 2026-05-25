@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>District 325F Digital Hub</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,'Noto Sans Devanagari',sans-serif}
+body{background:linear-gradient(180deg,#eef8fb,#f8fbff);color:#10233f;padding-bottom:85px}
+.app{max-width:1100px;margin:auto;padding:18px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.menu{font-size:28px}
+.badge{background:#0d47a1;color:white;padding:8px 14px;border-radius:20px;font-weight:bold}
+.hero{background:linear-gradient(135deg,#0d47a1,#1976d2);color:white;border-radius:28px;padding:28px 22px;box-shadow:0 15px 35px #0002;margin-bottom:22px}
+.hero h1{font-size:30px;margin-bottom:8px}
+.hero p{opacity:.95;font-size:16px}
+.dateBox{margin-top:18px;background:#ffffff22;border-radius:18px;padding:12px;display:inline-block}
+.search{background:white;border-radius:20px;padding:15px 18px;box-shadow:0 8px 25px #0001;margin-bottom:22px;display:flex;gap:10px;align-items:center}
+.search input{border:none;outline:none;width:100%;font-size:16px}
+.sectionTitle{font-size:22px;margin:18px 4px;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.card{background:white;border-radius:24px;padding:18px 12px;text-align:center;box-shadow:0 10px 28px #00000012;text-decoration:none;color:#10233f;transition:.25s;border:1px solid #eef2f7}
+.card:hover{transform:translateY(-6px);box-shadow:0 16px 35px #0002}
+.icon{font-size:36px;margin-bottom:10px}
+.card h3{font-size:16px;margin-bottom:7px}
+.card p{font-size:12px;color:#667085;line-height:1.4}
+.open{margin-top:12px;background:#f4b400;color:#10233f;border-radius:18px;padding:7px 12px;font-size:12px;font-weight:bold;display:inline-block}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:white;box-shadow:0 -8px 25px #0002;display:flex;justify-content:space-around;padding:10px 0;z-index:99}
+.nav{font-size:12px;text-align:center;color:#42526e;text-decoration:none}
+.nav span{display:block;font-size:24px;margin-bottom:2px}
+@media(min-width:700px){
+.hero h1{font-size:42px}
+.grid{grid-template-columns:repeat(4,1fr)}
+.card{padding:24px 15px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <div class="top">
+    <div class="menu">☰</div>
+    <div class="badge">District 325F</div>
+  </div>
+
+  <div class="hero">
+    <h1>District 325F Digital Hub</h1>
+    <p>One Click • One District • One Digital Future</p>
+    <div class="dateBox" id="today">आजको मिति</div>
+  </div>
+
+  <div class="search">
+    🔍 <input type="text" id="searchInput" placeholder="System खोज्नुहोस्...">
+  </div>
+
+  <h2 class="sectionTitle">Digital Systems</h2>
+
+  <div class="grid" id="systemGrid">
+
+    <a class="card" target="_blank" href="https://district325f.github.io/Cabinet-Schooling/">
+      <div class="icon">🎓</div>
+      <h3>Cabinet Schooling</h3>
+      <p>Training, learning and cabinet schooling system</p>
+      <div class="open">Open System</div>
+    </a>
+
+    <a class="card" target="_blank" href="https://district325f.github.io/schooling-frame/">
+      <div class="icon">🖼️</div>
+      <h3>Schooling Frame</h3>
+      <p>Digital presentation and frame-based schooling access</p>
+      <div class="open">Open System</div>
+    </a>
+
+    <a class="card" target="_blank" href="https://district325f.github.io/Cabinet-Transportation/">
+      <div class="icon">🚍</div>
+      <h3>Transportation</h3>
+      <p>Smart transport coordination and movement system</p>
+      <div class="open">Open System</div>
+    </a>
+
+    <a class="card" target="_blank" href="https://district325f.github.io/Attendance-System/">
+      <div class="icon">📲</div>
+      <h3>Attendance System</h3>
+      <p>Digital attendance, verification and live report</p>
+      <div class="open">Open System</div>
+    </a>
+
+    <a class="card" target="_blank" href="https://district325f.github.io/LCIF/">
+      <div class="icon">🌍</div>
+      <h3>LCIF System</h3>
+      <p>Donation, service impact and humanitarian tracking</p>
+      <div class="open">Open System</div>
+    </a>
+
+    <a class="card" target="_blank" href="https://script.google.com/macros/s/AKfycbyHthx2b4rGjoAMKma2eMZHC_fWET1AVjSyrNRb-OudFOzEDvJ2xGtYLvqV4iCifDw0_Q/exec">
+      <div class="icon">🧠</div>
+      <h3>Lions Knowledge</h3>
+      <p>Quiz, learning and Lions knowledge digital platform</p>
+      <div class="open">Open System</div>
+    </a>
+
+    <a class="card" target="_blank" href="https://script.google.com/macros/s/AKfycbxsGDHqSsR_YD2hdM2GnMMg489LI63TeLM7pQZnYq-yvTl7GvS0bnGvTgIleYo6SRis4Q/exec">
+      <div class="icon">🏆</div>
+      <h3>Award & Analysis</h3>
+      <p>District award, club performance and analysis system</p>
+      <div class="open">Open System</div>
+    </a>
+
+    <a class="card" href="#future">
+      <div class="icon">🤝</div>
+      <h3>Service Network</h3>
+      <p>Future inter-club collaboration and service platform</p>
+      <div class="open">Coming Soon</div>
+    </a>
+
+  </div>
+
+  <h2 class="sectionTitle" id="future">Future Vision</h2>
+  <div class="hero">
+    <h1 style="font-size:26px">One Click Service Collaboration</h1>
+    <p>कुनै पनि Club ले service activity गर्दा अन्य clubs लाई एक click मा information, support request र participation notice पठाउन सकिने future digital ecosystem.</p>
+  </div>
+
+</div>
+
+<div class="bottom">
+  <a class="nav" href="#"><span>🏠</span>Home</a>
+  <a class="nav" href="#systemGrid"><span>📱</span>Systems</a>
+  <a class="nav" href="#future"><span>🤝</span>Service</a>
+  <a class="nav" href="#"><span>ℹ️</span>About</a>
+  <a class="nav" href="#"><span>⚙️</span>Admin</a>
+</div>
+
+<script>
+const today = new Date();
+document.getElementById("today").innerHTML =
+  "आज: " + today.toLocaleDateString("ne-NP") + " • " +
+  today.toLocaleTimeString("ne-NP",{hour:'2-digit',minute:'2-digit'});
+
+const searchInput = document.getElementById("searchInput");
+const cards = document.querySelectorAll(".card");
+
+searchInput.addEventListener("input", function(){
+  const value = this.value.toLowerCase();
+  cards.forEach(card=>{
+    card.style.display = card.innerText.toLowerCase().includes(value) ? "block" : "none";
+  });
+});
+</script>
+
+</body>
+</html>
