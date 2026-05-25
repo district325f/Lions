@@ -6,39 +6,51 @@
 <title>District 325F Digital Hub</title>
 
 <style>
+
 *{
   box-sizing:border-box;
   margin:0;
   padding:0;
   font-family:Arial,'Noto Sans Devanagari',sans-serif;
 }
+
+html{
+  scroll-behavior:smooth;
+}
+
 body{
   background:linear-gradient(180deg,#edf9fc,#f8fbff);
   color:#10233f;
   padding-bottom:95px;
 }
+
 .app{
   max-width:1100px;
   margin:auto;
   padding:18px;
 }
+
 .top{
   display:flex;
   justify-content:space-between;
   align-items:center;
   margin-bottom:18px;
 }
+
 .menu{
   font-size:30px;
   color:#123;
 }
+
 .badge{
   background:#0d47a1;
   color:white;
   padding:8px 15px;
   border-radius:22px;
   font-weight:bold;
+  box-shadow:0 5px 15px #0001;
 }
+
 .hero{
   background:linear-gradient(135deg,#0d47a1,#1976d2);
   color:white;
@@ -46,22 +58,45 @@ body{
   padding:28px 22px;
   box-shadow:0 15px 35px #0002;
   margin-bottom:22px;
+  position:relative;
+  overflow:hidden;
 }
+
+.hero::after{
+  content:'';
+  position:absolute;
+  width:180px;
+  height:180px;
+  background:#ffffff15;
+  border-radius:50%;
+  right:-50px;
+  top:-50px;
+}
+
 .hero h1{
   font-size:30px;
   margin-bottom:8px;
+  position:relative;
+  z-index:2;
 }
+
 .hero p{
   font-size:16px;
   opacity:.95;
+  position:relative;
+  z-index:2;
 }
+
 .dateBox{
   margin-top:18px;
   background:#ffffff24;
   border-radius:18px;
   padding:12px 15px;
   display:inline-block;
+  position:relative;
+  z-index:2;
 }
+
 .search{
   background:white;
   border-radius:22px;
@@ -72,22 +107,27 @@ body{
   gap:10px;
   align-items:center;
 }
+
 .search input{
   border:none;
   outline:none;
   width:100%;
   font-size:16px;
+  background:transparent;
 }
+
 .sectionTitle{
   font-size:22px;
   margin:18px 4px;
   font-weight:800;
 }
+
 .grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
   gap:16px;
 }
+
 .card{
   background:white;
   border-radius:24px;
@@ -96,27 +136,51 @@ body{
   box-shadow:0 10px 28px #00000012;
   text-decoration:none;
   color:#10233f;
-  transition:.25s;
+  transition:.28s;
   border:1px solid #eef2f7;
+  position:relative;
+  overflow:hidden;
 }
+
+.card::before{
+  content:'';
+  position:absolute;
+  width:120px;
+  height:120px;
+  background:#1976d208;
+  border-radius:50%;
+  right:-40px;
+  top:-40px;
+}
+
 .card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 16px 35px #0002;
+  transform:translateY(-7px) scale(1.02);
+  box-shadow:0 18px 40px #0002;
 }
+
 .icon{
-  font-size:36px;
+  font-size:38px;
   margin-bottom:10px;
+  position:relative;
+  z-index:2;
 }
+
 .card h3{
   font-size:16px;
   margin-bottom:7px;
+  position:relative;
+  z-index:2;
 }
+
 .card p{
   font-size:12px;
   color:#667085;
   line-height:1.4;
   min-height:35px;
+  position:relative;
+  z-index:2;
 }
+
 .open{
   margin-top:12px;
   background:#f4b400;
@@ -126,7 +190,10 @@ body{
   font-size:12px;
   font-weight:bold;
   display:inline-block;
+  position:relative;
+  z-index:2;
 }
+
 .loading{
   grid-column:1/-1;
   text-align:center;
@@ -135,15 +202,32 @@ body{
   border-radius:20px;
   color:#667085;
 }
+
+.skeleton{
+  height:165px;
+  border-radius:24px;
+  background:linear-gradient(90deg,#eef2f7,#ffffff,#eef2f7);
+  background-size:200% 100%;
+  animation:shine 1s infinite;
+}
+
+@keyframes shine{
+  0%{background-position:200% 0}
+  100%{background-position:-200% 0}
+}
+
 .footer{
   text-align:center;
   margin:30px 0 5px;
   font-size:14px;
   color:#475467;
+  line-height:1.7;
 }
+
 .footer strong{
   color:#0d47a1;
 }
+
 .bottom{
   position:fixed;
   bottom:0;
@@ -154,24 +238,44 @@ body{
   display:flex;
   justify-content:space-around;
   padding:10px 0;
-  z-index:99;
+  z-index:999;
+  backdrop-filter:blur(10px);
 }
+
 .nav{
   font-size:12px;
   text-align:center;
   color:#42526e;
   text-decoration:none;
+  transition:.2s;
 }
+
+.nav:hover{
+  transform:translateY(-2px);
+}
+
 .nav span{
   display:block;
   font-size:24px;
   margin-bottom:2px;
 }
+
 @media(min-width:700px){
-  .hero h1{font-size:42px}
-  .grid{grid-template-columns:repeat(4,1fr)}
-  .card{padding:24px 15px}
+
+  .hero h1{
+    font-size:42px;
+  }
+
+  .grid{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+  .card{
+    padding:24px 15px;
+  }
+
 }
+
 </style>
 </head>
 
@@ -187,93 +291,201 @@ body{
   <div class="hero">
     <h1>District 325F Digital Hub</h1>
     <p>One Click • One District • One Digital Future</p>
-    <div class="dateBox" id="today">आजको मिति</div>
+    <div class="dateBox" id="today">Loading Date...</div>
   </div>
 
   <div class="search">
-    🔍 <input type="text" id="searchInput" placeholder="System खोज्नुहोस्...">
+    🔍
+    <input type="text" id="searchInput" placeholder="System खोज्नुहोस्...">
   </div>
 
   <h2 class="sectionTitle">Digital Systems</h2>
 
   <div class="grid" id="systemGrid">
-    <div class="loading">Systems loading...</div>
+
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+
   </div>
 
   <div class="footer">
-    Design by: <strong>Nirajan Aryal</strong> (9851113811)
+    Design by: <strong>Nirajan Aryal</strong><br>
+    Mobile: 9851113811
   </div>
 
 </div>
 
 <div class="bottom">
-  <a class="nav" href="#"><span>🏠</span>Home</a>
-  <a class="nav" href="#systemGrid"><span>📱</span>Systems</a>
-  <a class="nav" href="#"><span>ℹ️</span>About</a>
-  <a class="nav" href="#"><span>⚙️</span>Admin</a>
+
+  <a class="nav" href="#">
+    <span>🏠</span>
+    Home
+  </a>
+
+  <a class="nav" href="#systemGrid">
+    <span>📱</span>
+    Systems
+  </a>
+
+  <a class="nav" href="#">
+    <span>ℹ️</span>
+    About
+  </a>
+
+  <a class="nav" href="#">
+    <span>⚙️</span>
+    Admin
+  </a>
+
 </div>
 
 <script>
+
 const API_URL = "https://script.google.com/macros/s/AKfycbz1hmQLbm4wa5qheEu2ErIt-ni0r24IenrMHZGaYZu8YtMCmtDHMR0-s6NuFZEifRl8QQ/exec";
 
 const systemGrid = document.getElementById("systemGrid");
 const searchInput = document.getElementById("searchInput");
+
 let allSystems = [];
 
 const today = new Date();
-document.getElementById("today").innerHTML =
-  "आज: " + today.toLocaleDateString("ne-NP") + " • " +
-  today.toLocaleTimeString("ne-NP",{hour:'2-digit',minute:'2-digit'});
 
-fetch(API_URL)
-  .then(res => res.json())
-  .then(data => {
-    allSystems = data;
-    renderSystems(allSystems);
-  })
-  .catch(error => {
-    systemGrid.innerHTML = `
-      <div class="loading">
-        System load हुन सकेन। Apps Script URL / Deployment check गर्नुहोस्।
-      </div>
-    `;
+document.getElementById("today").innerHTML =
+  "आज: " +
+  today.toLocaleDateString("ne-NP") +
+  " • " +
+  today.toLocaleTimeString("ne-NP", {
+    hour:'2-digit',
+    minute:'2-digit'
   });
 
+
+// FAST CACHE LOAD
+
+const cached = localStorage.getItem("hubSystems");
+
+if(cached){
+
+  allSystems = JSON.parse(cached);
+
+  renderSystems(allSystems);
+
+}
+
+
+// BACKGROUND FETCH UPDATE
+
+fetch(API_URL)
+
+.then(res => res.json())
+
+.then(data => {
+
+  allSystems = data;
+
+  localStorage.setItem("hubSystems", JSON.stringify(data));
+
+  renderSystems(allSystems);
+
+})
+
+.catch(error => {
+
+  if(!cached){
+
+    systemGrid.innerHTML = `
+      <div class="loading">
+        System load हुन सकेन।<br>
+        Apps Script Deployment check गर्नुहोस्।
+      </div>
+    `;
+
+  }
+
+});
+
+
+
 function renderSystems(systems){
+
   systemGrid.innerHTML = "";
 
   if(!systems.length){
-    systemGrid.innerHTML = `<div class="loading">Active system भेटिएन। Sheet मा Status = Active राख्नुहोस्।</div>`;
+
+    systemGrid.innerHTML = `
+      <div class="loading">
+        Active system भेटिएन।
+      </div>
+    `;
+
     return;
+
   }
 
   systems.forEach(item => {
+
     const card = document.createElement("a");
+
     card.className = "card";
+
     card.href = item.Link || "#";
+
     card.target = "_blank";
 
     card.innerHTML = `
-      <div class="icon">${item.Icon || "🔗"}</div>
-      <h3>${item.Name || "Untitled System"}</h3>
-      <p>${item.Description || ""}</p>
-      <div class="open">Open System</div>
+
+      <div class="icon">
+        ${item.Icon || "🔗"}
+      </div>
+
+      <h3>
+        ${item.Name || "Untitled System"}
+      </h3>
+
+      <p>
+        ${item.Description || ""}
+      </p>
+
+      <div class="open">
+        Open System
+      </div>
+
     `;
 
     systemGrid.appendChild(card);
+
   });
+
 }
 
+
+
+// SEARCH SYSTEM
+
 searchInput.addEventListener("input", function(){
+
   const value = this.value.toLowerCase();
 
   const filtered = allSystems.filter(item =>
-    String(item.Name).toLowerCase().includes(value) ||
-    String(item.Description).toLowerCase().includes(value)
+
+    String(item.Name)
+    .toLowerCase()
+    .includes(value)
+
+    ||
+
+    String(item.Description)
+    .toLowerCase()
+    .includes(value)
+
   );
 
   renderSystems(filtered);
+
 });
+
 </script>
 
 </body>
