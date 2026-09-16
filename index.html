@@ -292,6 +292,199 @@ body{
   margin-bottom:2px;
 }
 
+/* ===== ABOUT UPDATE: ADDITIVE ONLY ===== */
+.aboutOverlay{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:74px;
+  z-index:998;
+  overflow-y:auto;
+  background:linear-gradient(180deg,#edf9fc,#f8fbff);
+}
+
+.aboutOverlay.show{
+  display:block;
+}
+
+.aboutWrap{
+  max-width:1100px;
+  margin:auto;
+  padding:18px;
+}
+
+.aboutTop{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  margin-bottom:18px;
+}
+
+.aboutBack{
+  position:absolute;
+  left:0;
+  border:none;
+  background:transparent;
+  color:#0d47a1;
+  font-size:34px;
+  cursor:pointer;
+}
+
+.aboutTop h2{
+  font-size:27px;
+  color:#102d61;
+}
+
+.aboutBanner{
+  background:linear-gradient(135deg,#0d47a1,#1976d2);
+  color:white;
+  border-radius:28px;
+  padding:25px 20px;
+  text-align:center;
+  box-shadow:0 15px 35px #0002;
+}
+
+.aboutBannerLogo{
+  width:95px;
+  height:95px;
+  object-fit:contain;
+  background:white;
+  padding:7px;
+  border-radius:50%;
+  display:none;
+  margin:0 auto 14px;
+}
+
+.aboutBanner h1{
+  font-size:34px;
+  margin-bottom:7px;
+}
+
+.aboutBanner p{
+  font-size:20px;
+}
+
+.aboutSlogan{
+  display:inline-block;
+  margin-top:15px;
+  padding-top:12px;
+  border-top:3px solid #f4b400;
+  font-style:italic;
+}
+
+.aboutContent{
+  display:grid;
+  grid-template-columns:330px 1fr;
+  gap:20px;
+  margin-top:20px;
+  align-items:start;
+}
+
+.designerCard{
+  border:5px solid #1976d2;
+  border-radius:24px;
+  overflow:hidden;
+  background:#0d47a1;
+  color:white;
+  text-align:center;
+  box-shadow:0 10px 28px #0002;
+}
+
+.designerCard img{
+  display:block;
+  width:100%;
+  aspect-ratio:4/5;
+  object-fit:cover;
+}
+
+.designerCaption{
+  padding:14px;
+  line-height:1.55;
+}
+
+.designerCaption strong{
+  display:block;
+  color:#ffd633;
+  font-size:21px;
+}
+
+.districtInfo,
+.softwareInfo{
+  background:white;
+  border-radius:24px;
+  padding:22px;
+  box-shadow:0 10px 28px #00000012;
+}
+
+.districtInfo h2,
+.softwareInfo h2{
+  color:#0d47a1;
+  margin-bottom:12px;
+}
+
+.districtInfo p,
+.softwareInfo p{
+  color:#344054;
+  font-size:16px;
+  line-height:1.65;
+  margin-bottom:10px;
+}
+
+.aboutFeatures{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  background:white;
+  border-radius:24px;
+  padding:16px;
+  margin-top:20px;
+  text-align:center;
+  box-shadow:0 10px 28px #00000012;
+}
+
+.aboutFeatures span{
+  display:block;
+  font-size:30px;
+  margin-bottom:5px;
+}
+
+.aboutFeatures strong{
+  display:block;
+  color:#102d61;
+  margin-bottom:4px;
+}
+
+.aboutFeatures small{
+  color:#667085;
+}
+
+.softwareInfo{
+  margin-top:20px;
+}
+
+.softwareCredit{
+  font-style:italic;
+}
+
+.technologyTag{
+  margin-top:12px;
+  text-align:center;
+  background:#e8f2ff;
+  color:#0d47a1;
+  padding:10px;
+  border-radius:18px;
+  font-weight:bold;
+  font-size:18px;
+}
+
+.aboutActive{
+  color:#0d47a1;
+  font-weight:bold;
+}
+
 @media(min-width:700px){
   .grid{
     grid-template-columns:repeat(4,1fr);
@@ -319,6 +512,27 @@ body{
   .lionsLogo{
     width:95px;
     height:95px;
+  }
+
+  .aboutTop h2{
+    font-size:22px;
+  }
+
+  .aboutBanner h1{
+    font-size:29px;
+  }
+
+  .aboutContent{
+    grid-template-columns:1fr;
+  }
+
+  .designerCard{
+    max-width:390px;
+    margin:auto;
+  }
+
+  .aboutFeatures{
+    font-size:13px;
   }
 }
 </style>
@@ -376,18 +590,132 @@ body{
 
 </div>
 
+<!-- ===== ABOUT UPDATE: OPENS ONLY FROM BOTTOM ℹ️ ABOUT ===== -->
+<div class="aboutOverlay" id="aboutOverlay">
+  <div class="aboutWrap">
+
+    <div class="aboutTop">
+      <button
+        type="button"
+        class="aboutBack"
+        onclick="closeAbout()"
+        aria-label="Back">
+        ←
+      </button>
+
+      <h2>About District 325F</h2>
+    </div>
+
+    <div class="aboutBanner">
+      <img
+        id="aboutLionsLogo"
+        class="aboutBannerLogo"
+        src=""
+        alt="Lions Logo">
+
+      <h1>Lions International</h1>
+      <p>District 325 F, Nepal</p>
+
+      <div class="aboutSlogan">
+        Service • Leadership • Community • Together
+      </div>
+    </div>
+
+    <div class="aboutContent">
+
+      <div class="designerCard">
+        <img
+          src="nirajan-aryal-about-final.jpg"
+          alt="Lion Nirajan Aryal">
+
+        <div class="designerCaption">
+          Designed by
+          <strong>Lion Nirajan Aryal</strong>
+          9851113811
+        </div>
+      </div>
+
+      <div class="districtInfo">
+        <h2>About District 325F</h2>
+
+        <p id="districtInformation">
+          Lions International District 325F, Nepal is a
+          service-oriented organization committed to community
+          welfare, humanitarian service and leadership development.
+        </p>
+
+        <p>
+          Together with our clubs and members, we work towards
+          a brighter, healthier and more compassionate society.
+        </p>
+
+        <p>
+          This Digital Hub provides easy access to district systems,
+          information and resources for Lions members and the community.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="aboutFeatures">
+
+      <div>
+        <span>👥</span>
+        <strong>Clubs</strong>
+        <small>Stronger Together</small>
+      </div>
+
+      <div>
+        <span>💙</span>
+        <strong>Service</strong>
+        <small>We Serve</small>
+      </div>
+
+      <div>
+        <span>📊</span>
+        <strong>Impact</strong>
+        <small>For a Better Nepal</small>
+      </div>
+
+    </div>
+
+    <div class="softwareInfo">
+      <h2>💻 About This Software</h2>
+
+      <p>
+        This Lions Digital Hub is developed to provide one-click
+        access to all district systems, information and services.
+      </p>
+
+      <p class="softwareCredit">
+        Designed &amp; Developed by
+        <strong>Lion Nirajan Aryal (9851113811)</strong>
+      </p>
+
+      <div class="technologyTag">
+        “Technology for Service”
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <div class="bottom">
-  <a class="nav" href="#">
+  <a class="nav" href="#" onclick="closeAbout()">
     <span>🏠</span>
     Home
   </a>
 
-  <a class="nav" href="#systemGrid">
+  <a class="nav" href="#systemGrid" onclick="closeAbout()">
     <span>📱</span>
     Systems
   </a>
 
-  <a class="nav" href="#">
+  <a
+    class="nav"
+    id="aboutNav"
+    href="#"
+    onclick="openAbout(); return false;">
     <span>ℹ️</span>
     About
   </a>
@@ -468,12 +796,29 @@ function applySettings(settings){
     "One Click • One District • One Digital Future";
 
   const logo = document.getElementById("lionsLogo");
+  const aboutLogo = document.getElementById("aboutLionsLogo");
 
   if(settings.LogoURL){
     logo.src = settings.LogoURL;
     logo.style.display = "block";
+
+    // Same existing Sheet logo is reused in About.
+    aboutLogo.src = settings.LogoURL;
+    aboutLogo.style.display = "block";
   }else{
     logo.style.display = "none";
+    aboutLogo.style.display = "none";
+  }
+
+  /*
+    Future Sheet support:
+    If a Settings row named AboutText is later returned by the
+    existing API, it will automatically replace the demo text.
+    No Code.gs change is required for the current demo.
+  */
+  if(settings.AboutText){
+    document.getElementById("districtInformation").innerText =
+      settings.AboutText;
   }
 }
 
@@ -536,6 +881,29 @@ searchInput.addEventListener("input", function(){
 
   renderSystems(filtered);
 });
+
+
+// ===== ABOUT UPDATE: ADDITIVE ONLY =====
+
+function openAbout(){
+  const aboutOverlay =
+    document.getElementById("aboutOverlay");
+
+  aboutOverlay.classList.add("show");
+
+  document.getElementById("aboutNav")
+    .classList.add("aboutActive");
+
+  aboutOverlay.scrollTop = 0;
+}
+
+function closeAbout(){
+  document.getElementById("aboutOverlay")
+    .classList.remove("show");
+
+  document.getElementById("aboutNav")
+    .classList.remove("aboutActive");
+}
 </script>
 
 </body>
