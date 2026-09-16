@@ -292,6 +292,11 @@ body{
   margin-bottom:2px;
 }
 
+/* About page background scroll lock */
+body.aboutOpen{
+  overflow:hidden;
+}
+
 /* ===== ABOUT UPDATE: ADDITIVE ONLY ===== */
 .aboutOverlay{
   display:none;
@@ -302,6 +307,8 @@ body{
   bottom:74px;
   z-index:998;
   overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
   background:linear-gradient(180deg,#edf9fc,#f8fbff);
 }
 
@@ -890,6 +897,7 @@ function openAbout(){
     document.getElementById("aboutOverlay");
 
   aboutOverlay.classList.add("show");
+  document.body.classList.add("aboutOpen");
 
   document.getElementById("aboutNav")
     .classList.add("aboutActive");
@@ -900,6 +908,8 @@ function openAbout(){
 function closeAbout(){
   document.getElementById("aboutOverlay")
     .classList.remove("show");
+
+  document.body.classList.remove("aboutOpen");
 
   document.getElementById("aboutNav")
     .classList.remove("aboutActive");
