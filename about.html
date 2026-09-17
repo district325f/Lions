@@ -404,6 +404,89 @@
       text-align: center;
     }
 
+
+
+    /* =====================================================
+       MOBILE CONTACT ACTION MENU
+       ===================================================== */
+
+    .phone-action-button {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .contact-action-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      display: none;
+      background: rgba(15, 23, 42, 0.35);
+      padding: 18px;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .contact-action-backdrop.show {
+      display: flex;
+    }
+
+    .contact-action-sheet {
+      width: min(430px, 100%);
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 20px 55px rgba(15, 23, 42, 0.25);
+    }
+
+    .contact-action-number {
+      text-align: center;
+      font-weight: 700;
+      color: #0d47a1;
+      margin: 2px 0 14px;
+      word-break: break-word;
+    }
+
+    .contact-action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .contact-action-link {
+      display: flex;
+      min-height: 72px;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+      border: 1px solid #dbe3ee;
+      border-radius: 14px;
+      text-decoration: none;
+      color: #0f172a;
+      font-weight: 700;
+      background: #f8fafc;
+    }
+
+    .contact-action-close {
+      width: 100%;
+      margin-top: 10px;
+      padding: 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #475569;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+
     .club-detail {
       color: #0d47a1;
       font-weight: 700;
@@ -579,6 +662,19 @@
   </div>
 
 
+  <div id="contactActionBackdrop" class="contact-action-backdrop" aria-hidden="true">
+    <div class="contact-action-sheet" role="dialog" aria-modal="true" aria-label="Contact options">
+      <div id="contactActionNumber" class="contact-action-number"></div>
+      <div class="contact-action-grid">
+        <a id="contactCall" class="contact-action-link" href="#"><span>📞</span><span>Call</span></a>
+        <a id="contactWhatsApp" class="contact-action-link" href="#"><span>💬</span><span>WhatsApp</span></a>
+        <a id="contactSms" class="contact-action-link" href="#"><span>✉️</span><span>SMS</span></a>
+      </div>
+      <button id="contactActionClose" class="contact-action-close" type="button">Cancel</button>
+    </div>
+  </div>
+
+
   <script>
     /* ===================================================
        1. CONFIGURATION
@@ -623,7 +719,7 @@
             )
             .innerHTML =
               '<div class="empty">' +
-              'Officer data load हुन सकेन।' +
+              'Officer data load हुन सकेन ।' +
               '</div>';
         }
       );
@@ -753,7 +849,7 @@
       if (!officers.length) {
         container.innerHTML =
           '<div class="empty">' +
-          'Active District Officer data उपलब्ध छैन।' +
+          'Active District Officer data उपलब्ध छैन ।' +
           '</div>';
 
         return;
@@ -943,6 +1039,51 @@
     }
 
 
+    function normalizePhoneNumber(value) {
+      const raw = String(value || "").trim();
+      let digits = raw.replace(/\D/g, "");
+
+      if (!digits) {
+        return { dial: "", whatsapp: "" };
+      }
+
+      if (digits.indexOf("977") === 0) {
+        return { dial: "+" + digits, whatsapp: digits };
+      }
+
+      if (digits.length === 10 && digits.charAt(0) === "9") {
+        return { dial: "+977" + digits, whatsapp: "977" + digits };
+      }
+
+      return { dial: "+" + digits, whatsapp: digits };
+    }
+
+
+    function openContactActions(value) {
+      const normalized = normalizePhoneNumber(value);
+      if (!normalized.dial) {
+        return;
+      }
+
+      document.getElementById("contactActionNumber").textContent = value;
+      document.getElementById("contactCall").href = "tel:" + normalized.dial;
+      document.getElementById("contactWhatsApp").href =
+        "https://wa.me/" + normalized.whatsapp;
+      document.getElementById("contactSms").href = "sms:" + normalized.dial;
+
+      const backdrop = document.getElementById("contactActionBackdrop");
+      backdrop.classList.add("show");
+      backdrop.setAttribute("aria-hidden", "false");
+    }
+
+
+    function closeContactActions() {
+      const backdrop = document.getElementById("contactActionBackdrop");
+      backdrop.classList.remove("show");
+      backdrop.setAttribute("aria-hidden", "true");
+    }
+
+
     function addPhoneDetail(parent, value) {
       if (!value) {
         return;
@@ -951,13 +1092,15 @@
       const line = document.createElement("div");
       line.className = "detail-line";
 
-      const link = document.createElement("a");
-      link.href = "tel:" + String(value).replace(/[^+\d]/g, "");
-      link.textContent = "📞 " + value;
-      link.style.color = "inherit";
-      link.style.textDecoration = "none";
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "phone-action-button";
+      button.textContent = "📞 " + value;
+      button.addEventListener("click", function() {
+        openContactActions(value);
+      });
 
-      line.appendChild(link);
+      line.appendChild(button);
       parent.appendChild(line);
     }
 
@@ -990,6 +1133,18 @@
         line
       );
     }
+
+
+    document.getElementById("contactActionClose")
+      .addEventListener("click", closeContactActions);
+
+    document.getElementById("contactActionBackdrop")
+      .addEventListener("click", function(event) {
+        if (event.target === this) {
+          closeContactActions();
+        }
+      });
+
     document
       .getElementById("officerSearch")
       .addEventListener("input", filterOfficers);
