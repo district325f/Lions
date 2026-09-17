@@ -802,12 +802,20 @@
           </div>
 
 
-          <div class="full">
+          <div class="full officer-action-row">
             <button
               id="saveOfficerButton"
               type="button"
             >
               Save Officer
+            </button>
+
+            <button
+              id="cancelEditButton"
+              type="button"
+              class="secondary hidden"
+            >
+              Cancel Edit
             </button>
           </div>
 
@@ -1831,6 +1839,7 @@
 
         editingOfficerId = "";
         window.currentEditingDisplayOrder = null;
+        setEditMode(false);
 
         await loadOfficers();
 
@@ -2042,9 +2051,35 @@
     }
 
 
+    function setEditMode(isEditing) {
+      const cancelButton = $("cancelEditButton");
+      if (cancelButton) {
+        cancelButton.classList.toggle("hidden", !isEditing);
+      }
+
+      $("saveOfficerButton").textContent =
+        isEditing ? "Update Officer" : "Save Officer";
+    }
+
+
+    function cancelOfficerEdit() {
+      editingOfficerId = "";
+      window.currentEditingDisplayOrder = null;
+      setEditMode(false);
+      resetForNextOfficer();
+      showMessage(
+        "saveMessage",
+        "Edit cancelled. Saved data परिवर्तन गरिएको छैन।",
+        "success"
+      );
+    }
+
+
     async function editOfficer(officer) {
       editingOfficerId =
         officer.OfficerID || "";
+
+      setEditMode(true);
 
       $("membershipNumber").value =
         officer.MembershipNumber || "";
@@ -2277,6 +2312,12 @@
       .addEventListener(
         "click",
         saveOfficer
+      );
+
+    $("cancelEditButton")
+      .addEventListener(
+        "click",
+        cancelOfficerEdit
       );
 
     $("password")
