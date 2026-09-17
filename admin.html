@@ -566,7 +566,7 @@
 
         <p>
           Membership Number Search गर्नुहोस्।
-          उपलब्ध data automatic आउँछ।
+          उपलब्ध data automatic आउँछ ।
           Missing data यहीँ manually थप्न सकिन्छ।
         </p>
       </div>
@@ -819,7 +819,7 @@
             <datalist id="committeeAreaOptions"></datalist>
 
             <div class="hint">
-              Officer Type अनुसार list automatic आउँछ।
+              Officer Type अनुसार list automatic आउँछ ।
             </div>
           </div>
 
@@ -829,17 +829,19 @@
               Position <span class="required-mark">*</span>
             </label>
 
+            <select id="positionQuickSelect" aria-label="Select Position">
+              <option value="">Select Position</option>
+            </select>
+
             <input
               id="position"
               type="text"
-              list="positionOptions"
-              placeholder="Type or select position"
+              placeholder="Or type position manually"
+              style="margin-top:8px;"
             >
 
-            <datalist id="positionOptions"></datalist>
-
             <div class="hint">
-              List मा नभएको position manually type गर्न मिल्छ।
+              Officer Type अनुसार Position list automatic आउँछ । List मा नभएको Position manually type गर्न मिल्छ ।
             </div>
           </div>
 
@@ -1060,10 +1062,12 @@
       });
 
       const selectedArea = $("committeeArea").value.trim();
+
+      // Position is primarily filtered by Officer Type. Committee / Area is
+      // optional: blank CommitteeArea rows must always remain available.
       const positionRows = matching.filter(function(row) {
-        return !selectedArea ||
-          !row.CommitteeArea ||
-          row.CommitteeArea === selectedArea;
+        if (!selectedArea) return true;
+        return !row.CommitteeArea || row.CommitteeArea === selectedArea;
       });
 
       const positions = uniqueValues(
@@ -1072,13 +1076,22 @@
         })
       );
 
-      const positionList = $("positionOptions");
-      positionList.innerHTML = "";
+      const positionSelect = $("positionQuickSelect");
+      const currentPosition = $("position").value.trim();
+      positionSelect.innerHTML = '<option value="">Select Position</option>';
+
       positions.forEach(function(position) {
         const option = document.createElement("option");
         option.value = position;
-        positionList.appendChild(option);
+        option.textContent = position;
+        positionSelect.appendChild(option);
       });
+
+      if (currentPosition && positions.includes(currentPosition)) {
+        positionSelect.value = currentPosition;
+      } else {
+        positionSelect.value = "";
+      }
     }
 
 
@@ -2388,12 +2401,24 @@
         }
       );
 
+    $("positionQuickSelect")
+      .addEventListener(
+        "change",
+        function() {
+          if (this.value) {
+            $("position").value = this.value;
+            $("position").dispatchEvent(new Event("input", { bubbles: true }));
+          }
+        }
+      );
+
     $("category")
       .addEventListener(
         "change",
         function() {
           $("committeeArea").value = "";
           $("position").value = "";
+          $("positionQuickSelect").value = "";
           refreshAssignmentOptions();
         }
       );
