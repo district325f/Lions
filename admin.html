@@ -876,6 +876,38 @@
       <div class="card">
         <h2>Current / Saved Officers</h2>
 
+        <div
+          id="protocolToolbar"
+          class="toolbar"
+          style="margin-bottom:12px;"
+        >
+          <button
+            type="button"
+            id="protocolModeButton"
+            class="secondary"
+          >
+            ↕ Protocol Order
+          </button>
+
+          <button
+            type="button"
+            id="saveProtocolButton"
+            class="hidden"
+          >
+            Save Protocol Order
+          </button>
+
+          <button
+            type="button"
+            id="cancelProtocolButton"
+            class="secondary hidden"
+          >
+            Cancel
+          </button>
+        </div>
+
+        <div id="protocolMessage"></div>
+
         <div id="officerList">
           Loading...
         </div>
@@ -906,6 +938,9 @@
     let selectedMember = null;
     let editingOfficerId = "";
     let nextDisplayOrder = 1;
+    let currentOfficers = [];
+    let protocolDraft = [];
+    let protocolMode = false;
 
 
     /* ===================================================
@@ -1966,8 +2001,14 @@
             ) + 1
           : 1;
 
+      currentOfficers = officers.slice();
+
+      if (!protocolMode) {
+        protocolDraft = officers.slice();
+      }
+
       renderOfficerList(
-        officers
+        protocolMode ? protocolDraft : currentOfficers
       );
     }
 
@@ -2047,6 +2088,77 @@
             "toolbar";
 
 
+          if (protocolMode) {
+            const isActive =
+              String(officer.Active || "").toLowerCase() === "active";
+
+            const activeOfficers =
+              protocolDraft.filter(function(item) {
+                return String(item.Active || "").toLowerCase() === "active";
+              });
+
+            const activeIndex =
+              activeOfficers.findIndex(function(item) {
+                return item.OfficerID === officer.OfficerID;
+              });
+
+            if (isActive && activeIndex >= 0) {
+              const orderBadge =
+                document.createElement("span");
+
+              orderBadge.textContent =
+                String(activeIndex + 1).padStart(2, "0");
+
+              orderBadge.style.fontWeight = "700";
+              orderBadge.style.minWidth = "28px";
+              orderBadge.style.textAlign = "center";
+
+              const upButton =
+                document.createElement("button");
+
+              upButton.type = "button";
+              upButton.className = "secondary";
+              upButton.textContent = "↑";
+              upButton.title = "Move Up";
+              upButton.disabled = activeIndex === 0;
+
+              upButton.addEventListener(
+                "click",
+                function() {
+                  moveProtocolOfficer(officer.OfficerID, -1);
+                }
+              );
+
+              const downButton =
+                document.createElement("button");
+
+              downButton.type = "button";
+              downButton.className = "secondary";
+              downButton.textContent = "↓";
+              downButton.title = "Move Down";
+              downButton.disabled =
+                activeIndex === activeOfficers.length - 1;
+
+              downButton.addEventListener(
+                "click",
+                function() {
+                  moveProtocolOfficer(officer.OfficerID, 1);
+                }
+              );
+
+              actions.appendChild(orderBadge);
+              actions.appendChild(upButton);
+              actions.appendChild(downButton);
+            }
+
+            item.appendChild(info);
+            item.appendChild(actions);
+
+            $("officerList").appendChild(item);
+            return;
+          }
+
+
           const editButton =
             document.createElement(
               "button"
@@ -2105,6 +2217,132 @@
             .appendChild(item);
         }
       );
+    }
+
+
+    function setProtocolMode(enabled) {
+      protocolMode = enabled;
+
+      $("protocolModeButton")
+        .classList.toggle("hidden", enabled);
+
+      $("saveProtocolButton")
+        .classList.toggle("hidden", !enabled);
+
+      $("cancelProtocolButton")
+        .classList.toggle("hidden", !enabled);
+
+      if (enabled) {
+        protocolDraft = currentOfficers.slice();
+
+        showMessage(
+          "protocolMessage",
+          "↑ / ↓ प्रयोग गरेर District protocol अनुसार क्रम मिलाउनुहोस् ।"
+        );
+      } else {
+        $("protocolMessage").innerHTML = "";
+      }
+
+      renderOfficerList(
+        enabled ? protocolDraft : currentOfficers
+      );
+    }
+
+
+    function moveProtocolOfficer(officerId, direction) {
+      const active =
+        protocolDraft.filter(function(officer) {
+          return String(officer.Active || "").toLowerCase() === "active";
+        });
+
+      const inactive =
+        protocolDraft.filter(function(officer) {
+          return String(officer.Active || "").toLowerCase() !== "active";
+        });
+
+      const index =
+        active.findIndex(function(officer) {
+          return officer.OfficerID === officerId;
+        });
+
+      const target = index + direction;
+
+      if (
+        index < 0 ||
+        target < 0 ||
+        target >= active.length
+      ) {
+        return;
+      }
+
+      const temp = active[index];
+      active[index] = active[target];
+      active[target] = temp;
+
+      protocolDraft = active.concat(inactive);
+
+      renderOfficerList(protocolDraft);
+    }
+
+
+    async function saveProtocolOrder() {
+      const activeIds =
+        protocolDraft
+          .filter(function(officer) {
+            return String(officer.Active || "").toLowerCase() === "active";
+          })
+          .map(function(officer) {
+            return officer.OfficerID;
+          })
+          .filter(Boolean);
+
+      if (!activeIds.length) {
+        showMessage(
+          "protocolMessage",
+          "Save गर्न active officer भेटिएन ।",
+          "error"
+        );
+        return;
+      }
+
+      showLoading(
+        "Protocol order save हुँदैछ..."
+      );
+
+      try {
+        const result =
+          await apiRequest(
+            "reorderOfficers",
+            {
+              officerIds: activeIds
+            }
+          );
+
+        if (!result.ok) {
+          throw new Error(
+            result.message ||
+            "Protocol order save हुन सकेन ।"
+          );
+        }
+
+        setProtocolMode(false);
+        await loadOfficers();
+
+        showMessage(
+          "protocolMessage",
+          "Protocol order successfully save भयो ।",
+          "success"
+        );
+      } catch (error) {
+        showMessage(
+          "protocolMessage",
+          error.message ||
+          "Protocol order save हुन सकेन ।",
+          "error"
+        );
+      } finally {
+        hideLoading();
+      }
     }
 
 
@@ -2369,6 +2607,28 @@
       .addEventListener(
         "click",
         saveOfficer
+      );
+
+    $("protocolModeButton")
+      .addEventListener(
+        "click",
+        function() {
+          setProtocolMode(true);
+        }
+      );
+
+    $("saveProtocolButton")
+      .addEventListener(
+        "click",
+        saveProtocolOrder
+      );
+
+    $("cancelProtocolButton")
+      .addEventListener(
+        "click",
+        function() {
+          setProtocolMode(false);
+        }
       );
 
     $("cancelEditButton")
