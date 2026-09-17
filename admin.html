@@ -1,3 +1,1835 @@
-<!DOCTYPE html><html lang="ne"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>District 325F Admin</title><style>*{box-sizing:border-box;font-family:Arial,'Noto Sans Devanagari',sans-serif}body{margin:0;background:#eef6fb;color:#10233f}.wrap{max-width:1000px;margin:auto;padding:20px}.card{background:#fff;border-radius:22px;padding:22px;margin-bottom:18px;box-shadow:0 10px 28px #0001}h1,h2{color:#0d47a1}.login{max-width:430px;margin:60px auto}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.full{grid-column:1/-1}label{display:block;font-size:13px;font-weight:bold;margin-bottom:6px}input,select,button{width:100%;padding:12px;border:1px solid #d8e1eb;border-radius:12px;font-size:15px}button{border:0;background:#0d47a1;color:#fff;font-weight:bold;cursor:pointer}.gold{background:#f4b400;color:#10233f}.danger{background:#c62828}.muted{background:#667085}.toolbar{display:flex;gap:10px}.toolbar button{width:auto}.preview{display:flex;gap:16px;align-items:center;margin:15px 0;padding:15px;background:#f8fbff;border-radius:16px}.preview img{width:110px;height:130px;object-fit:cover;border-radius:14px;background:#e9eef5}.msg{padding:10px;border-radius:10px;margin-top:10px;background:#eef6ff}.listItem{border:1px solid #e6ebf0;border-radius:16px;padding:14px;margin:10px 0;display:flex;justify-content:space-between;gap:12px;align-items:center}.hidden{display:none}@media(max-width:650px){.row{grid-template-columns:1fr}.full{grid-column:auto}.toolbar{flex-wrap:wrap}.preview{align-items:flex-start}}</style></head><body><div class="wrap"><div id="loginBox" class="card login"><h1>⚙️ Admin Login</h1><label>Username</label><input id="user"><br><br><label>Password</label><input id="pass" type="password"><br><br><button onclick="login()">Login</button><div id="loginMsg"></div></div><div id="panel" class="hidden"><div class="card"><div class="toolbar"><button class="muted" onclick="location.href='index.html'">← Home</button><button class="danger" onclick="logout()">Logout</button></div><h1>District Officers Management</h1><p>Membership Number बाट member खोजेर officer assign गर्नुहोस्।</p></div><div class="card"><h2>1. Search Member</h2><div class="toolbar"><input id="memberNo" placeholder="Membership Number"><button onclick="searchMember()">Search</button></div><div id="searchMsg"></div><div id="preview" class="preview hidden"><img id="photo"><div><h3 id="mName"></h3><div id="mDetails"></div></div></div><div class="toolbar"><input id="photoFile" type="file" accept="image/*"><button class="gold" onclick="uploadPhoto()">Upload / Change Photo</button><button class="danger" onclick="removePhoto()">Remove Photo</button></div></div><div class="card"><h2>2. Assign / Edit Officer</h2><div class="row"><div><label>Category</label><input id="category" placeholder="District Executive Officers"></div><div><label>Position</label><input id="position" placeholder="District Governor"></div><div><label>LY</label><input id="ly" placeholder="2026/27"></div><div><label>Display Order</label><input id="order" type="number" value="1"></div><div><label>Start Date</label><input id="start" type="date"></div><div><label>End Date</label><input id="end" type="date"></div><div><label>Status</label><select id="active"><option>Yes</option><option>No</option></select></div><div class="full"><button onclick="saveOfficer()">Assign / Save Officer</button></div></div><div id="saveMsg"></div></div><div class="card"><h2>Current / Saved Officers</h2><div id="officerList">Loading...</div></div></div></div><script>
-const API="https://script.google.com/macros/s/AKfycbz1hmQLbm4wa5qheEu2ErIt-ni0r24IenrMHZGaYZu8YtMCmtDHMR0-s6NuFZEifRl8QQ/exec";let token=localStorage.getItem("hubAdminToken")||"",member=null,editingId="";if(token){showPanel();loadOfficers()}async function call(action,data={}){data.action=action;data.token=token;const r=await fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(data)});return r.json()}async function login(){try{const d=await call("login",{username:user.value,password:pass.value});if(!d.ok)throw Error(d.message||"Login failed");token=d.token;localStorage.setItem("hubAdminToken",token);showPanel();loadOfficers()}catch(e){loginMsg.innerHTML='<div class="msg">'+e.message+'</div>'}}function showPanel(){loginBox.classList.add("hidden");panel.classList.remove("hidden")}function logout(){localStorage.removeItem("hubAdminToken");location.reload()}async function searchMember(){try{const d=await call("searchMember",{membershipNumber:memberNo.value.trim()});if(!d.ok)throw Error(d.message);member=d.member;mName.textContent=member.Name||"";mDetails.innerHTML=`ID: ${member.MembershipNumber||""}<br>${member.Mobile||""}<br>${member.Email||""}<br>${member.Address||""}`;photo.src=member.PhotoURL||"";preview.classList.remove("hidden");searchMsg.textContent=""}catch(e){searchMsg.innerHTML='<div class="msg">'+e.message+'</div>'}}async function saveOfficer(){if(!member)return alert("पहिले Membership Number Search गर्नुहोस्।");const d=await call("saveOfficer",{officerId:editingId,membershipNumber:member.MembershipNumber,category:category.value,position:position.value,ly:ly.value,startDate:start.value,endDate:end.value,displayOrder:order.value,active:active.value});saveMsg.innerHTML='<div class="msg">'+(d.message||"Saved")+'</div>';if(d.ok){editingId="";loadOfficers()}}async function loadOfficers(){const d=await call("adminListOfficers");if(!d.ok){officerList.textContent=d.message||"Unable to load";return}officerList.innerHTML="";d.officers.forEach(o=>{const x=document.createElement("div");x.className="listItem";x.innerHTML=`<div><b>${o.Position||""}</b><br>${o.Name||""} (${o.MembershipNumber||""})<br><small>LY ${o.LY||""} • ${o.Active||""}</small></div><div class="toolbar"><button class="editBtn">Edit</button><button class="danger inactiveBtn">Inactive</button></div>`;x.querySelector('.editBtn').onclick=()=>editOfficer(o);x.querySelector('.inactiveBtn').onclick=()=>deactivate(o.OfficerID);officerList.appendChild(x)})}function editOfficer(o){editingId=o.OfficerID;memberNo.value=o.MembershipNumber;category.value=o.Category||"";position.value=o.Position||"";ly.value=o.LY||"";start.value=o.StartDate||"";end.value=o.EndDate||"";order.value=o.DisplayOrder||1;active.value=o.Active||"Yes";searchMember();scrollTo({top:0,behavior:"smooth"})}async function deactivate(id){if(!confirm("Officer लाई Inactive गर्ने?"))return;await call("deactivateOfficer",{officerId:id});loadOfficers()}async function uploadPhoto(){if(!member)return alert("पहिले member search गर्नुहोस्।");const f=photoFile.files[0];if(!f)return alert("Photo select गर्नुहोस्।");if(f.size>2*1024*1024)return alert("Photo 2MB भन्दा सानो राख्नुहोस्।");const b64=await new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result.split(",")[1]);r.readAsDataURL(f)});const d=await call("uploadPhoto",{membershipNumber:member.MembershipNumber,fileName:f.name,mimeType:f.type,base64:b64});alert(d.message);if(d.ok)searchMember()}async function removePhoto(){if(!member||!confirm("यो officer photo remove गर्ने?"))return;const d=await call("removePhoto",{membershipNumber:member.MembershipNumber});alert(d.message);if(d.ok)searchMember()}
-</script></body></html>
+<!DOCTYPE html>
+<html lang="ne">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>District 325F Admin</title>
+
+  <style>
+    /* =====================================================
+       1. BASE
+       ===================================================== */
+
+    * {
+      box-sizing: border-box;
+      font-family:
+        Arial,
+        "Noto Sans Devanagari",
+        sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #eef6fb;
+      color: #10233f;
+    }
+
+    .wrap {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 22px;
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 10px 28px #0001;
+    }
+
+    h1,
+    h2 {
+      color: #0d47a1;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+
+    /* =====================================================
+       2. FORM
+       ===================================================== */
+
+    .login {
+      max-width: 430px;
+      margin: 60px auto;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns:
+        repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 15px;
+    }
+
+    input,
+    select {
+      border: 1px solid #d8e1eb;
+      background: white;
+    }
+
+    button {
+      border: 0;
+      background: #0d47a1;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .gold {
+      background: #f4b400;
+      color: #10233f;
+    }
+
+    .danger {
+      background: #c62828;
+    }
+
+    .muted {
+      background: #667085;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+    }
+
+    .toolbar button {
+      width: auto;
+      min-width: 105px;
+    }
+
+
+    /* =====================================================
+       3. MEMBER PREVIEW
+       ===================================================== */
+
+    .preview {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin: 15px 0;
+      padding: 15px;
+      background: #f8fbff;
+      border-radius: 16px;
+    }
+
+    .preview img {
+      width: 110px;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 14px;
+      background: #e9eef5;
+    }
+
+    .message {
+      margin-top: 12px;
+      padding: 11px 13px;
+      border-radius: 11px;
+      background: #eef6ff;
+      line-height: 1.5;
+    }
+
+    .message.error {
+      background: #fff0f0;
+      color: #9b1c1c;
+    }
+
+    .message.success {
+      background: #edf9f0;
+      color: #166534;
+    }
+
+
+    /* =====================================================
+       4. OFFICER LIST
+       ===================================================== */
+
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+
+      margin: 10px 0;
+      padding: 14px;
+
+      border: 1px solid #e6ebf0;
+      border-radius: 16px;
+    }
+
+
+    /* =====================================================
+       5. UNIVERSAL PROCESSING OVERLAY / SPINNER
+       ===================================================== */
+
+    .processing-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      padding: 20px;
+      background: rgba(8, 28, 58, 0.52);
+      backdrop-filter: blur(4px);
+    }
+
+    .processing-overlay.show {
+      display: flex;
+    }
+
+    .processing-box {
+      width: min(320px, 92vw);
+      padding: 24px;
+
+      background: white;
+      border-radius: 22px;
+      text-align: center;
+
+      box-shadow:
+        0 18px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+
+      margin: 0 auto 15px;
+
+      border: 5px solid #dbeafe;
+      border-top-color: #0d47a1;
+      border-radius: 50%;
+
+      animation:
+        spin 0.8s linear infinite;
+    }
+
+    .processing-text {
+      color: #102d61;
+      font-weight: bold;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+
+    /* =====================================================
+       6. MOBILE
+       ===================================================== */
+
+    @media (max-width: 650px) {
+      .row {
+        grid-template-columns: 1fr;
+      }
+
+      .full {
+        grid-column: auto;
+      }
+
+      .toolbar {
+        flex-wrap: wrap;
+      }
+
+      .toolbar input {
+        flex: 1 1 100%;
+      }
+
+      .preview {
+        align-items: flex-start;
+      }
+
+      .list-item {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===================================================
+       UNIVERSAL PROCESSING OVERLAY
+       =================================================== -->
+
+  <div
+    id="processingOverlay"
+    class="processing-overlay"
+  >
+    <div class="processing-box">
+      <div class="spinner"></div>
+
+      <div
+        id="processingText"
+        class="processing-text"
+      >
+        Processing...
+      </div>
+    </div>
+  </div>
+
+
+  <div class="wrap">
+
+    <!-- =================================================
+         LOGIN
+         ================================================= -->
+
+    <div
+      id="loginBox"
+      class="card login"
+    >
+      <h1>⚙️ Admin Login</h1>
+
+      <label for="username">
+        Username
+      </label>
+
+      <input
+        id="username"
+        type="text"
+        autocomplete="username"
+      >
+
+      <br><br>
+
+      <label for="password">
+        Password
+      </label>
+
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+      >
+
+      <br><br>
+
+      <button
+        id="loginButton"
+        type="button"
+      >
+        Login
+      </button>
+
+      <div id="loginMessage"></div>
+    </div>
+
+
+    <!-- =================================================
+         ADMIN PANEL
+         ================================================= -->
+
+    <div
+      id="adminPanel"
+      class="hidden"
+    >
+
+      <div class="card">
+        <div class="toolbar">
+          <button
+            id="homeButton"
+            class="muted"
+            type="button"
+          >
+            ← Home
+          </button>
+
+          <button
+            id="logoutButton"
+            class="danger"
+            type="button"
+          >
+            Logout
+          </button>
+        </div>
+
+        <h1>
+          District Officers Management
+        </h1>
+
+        <p>
+          Membership Number बाट member खोजेर
+          officer assign गर्नुहोस्।
+        </p>
+      </div>
+
+
+      <!-- ===============================================
+           MEMBER SEARCH
+           =============================================== -->
+
+      <div class="card">
+        <h2>1. Search Member</h2>
+
+        <div class="toolbar">
+          <input
+            id="membershipNumber"
+            type="text"
+            placeholder="Membership Number"
+          >
+
+          <button
+            id="searchButton"
+            type="button"
+          >
+            Search
+          </button>
+        </div>
+
+        <div id="searchMessage"></div>
+
+
+        <div
+          id="memberPreview"
+          class="preview hidden"
+        >
+          <img
+            id="memberPhoto"
+            src=""
+            alt="Member Photo"
+          >
+
+          <div>
+            <h3 id="memberName"></h3>
+
+            <div id="memberDetails"></div>
+          </div>
+        </div>
+
+
+        <div class="toolbar">
+          <input
+            id="photoFile"
+            type="file"
+            accept="image/*"
+          >
+
+          <button
+            id="uploadPhotoButton"
+            class="gold"
+            type="button"
+          >
+            Upload / Change Photo
+          </button>
+
+          <button
+            id="removePhotoButton"
+            class="danger"
+            type="button"
+          >
+            Remove Photo
+          </button>
+        </div>
+      </div>
+
+
+      <!-- ===============================================
+           OFFICER ASSIGNMENT
+           =============================================== -->
+
+      <div class="card">
+        <h2>2. Assign / Edit Officer</h2>
+
+        <div class="row">
+
+          <div>
+            <label for="category">
+              Category
+            </label>
+
+            <input
+              id="category"
+              type="text"
+              placeholder="District Executive Officers"
+            >
+          </div>
+
+
+          <div>
+            <label for="position">
+              Position
+            </label>
+
+            <input
+              id="position"
+              type="text"
+              placeholder="District Governor"
+            >
+          </div>
+
+
+          <div>
+            <label for="ly">
+              LY
+            </label>
+
+            <input
+              id="ly"
+              type="text"
+              placeholder="2026/27"
+            >
+          </div>
+
+
+          <div>
+            <label for="displayOrder">
+              Display Order
+            </label>
+
+            <input
+              id="displayOrder"
+              type="number"
+              value="1"
+              min="1"
+            >
+          </div>
+
+
+          <div>
+            <label for="startDate">
+              Start Date
+            </label>
+
+            <input
+              id="startDate"
+              type="date"
+            >
+          </div>
+
+
+          <div>
+            <label for="endDate">
+              End Date
+            </label>
+
+            <input
+              id="endDate"
+              type="date"
+            >
+          </div>
+
+
+          <div>
+            <label for="activeStatus">
+              Status
+            </label>
+
+            <select id="activeStatus">
+              <option value="Yes">
+                Active
+              </option>
+
+              <option value="No">
+                Inactive
+              </option>
+            </select>
+          </div>
+
+
+          <div class="full">
+            <button
+              id="saveOfficerButton"
+              type="button"
+            >
+              Assign / Save Officer
+            </button>
+          </div>
+
+        </div>
+
+        <div id="saveMessage"></div>
+      </div>
+
+
+      <!-- ===============================================
+           SAVED OFFICERS
+           =============================================== -->
+
+      <div class="card">
+        <h2>Current / Saved Officers</h2>
+
+        <div id="officerList">
+          Loading...
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <script>
+    /* ===================================================
+       1. CONFIGURATION
+       =================================================== */
+
+    const API_URL =
+      "https://script.google.com/macros/s/" +
+      "AKfycbz1hmQLbm4wa5qheEu2ErIt-ni0r24IenrMHZGaYZu8YtMCmtDHMR0-s6NuFZEifRl8QQ" +
+      "/exec";
+
+    const REQUEST_TIMEOUT = 30000;
+
+    let adminToken =
+      localStorage.getItem(
+        "hubAdminToken"
+      ) || "";
+
+    let selectedMember = null;
+    let editingOfficerId = "";
+
+
+    /* ===================================================
+       2. DOM REFERENCES
+       =================================================== */
+
+    const loginBox =
+      document.getElementById(
+        "loginBox"
+      );
+
+    const adminPanel =
+      document.getElementById(
+        "adminPanel"
+      );
+
+    const usernameInput =
+      document.getElementById(
+        "username"
+      );
+
+    const passwordInput =
+      document.getElementById(
+        "password"
+      );
+
+    const membershipInput =
+      document.getElementById(
+        "membershipNumber"
+      );
+
+    const memberPreview =
+      document.getElementById(
+        "memberPreview"
+      );
+
+    const memberPhoto =
+      document.getElementById(
+        "memberPhoto"
+      );
+
+    const memberName =
+      document.getElementById(
+        "memberName"
+      );
+
+    const memberDetails =
+      document.getElementById(
+        "memberDetails"
+      );
+
+    const photoFile =
+      document.getElementById(
+        "photoFile"
+      );
+
+    const officerList =
+      document.getElementById(
+        "officerList"
+      );
+
+    const processingOverlay =
+      document.getElementById(
+        "processingOverlay"
+      );
+
+    const processingText =
+      document.getElementById(
+        "processingText"
+      );
+
+
+    /* ===================================================
+       3. UNIVERSAL PROCESSING / SPINNER
+       =================================================== */
+
+    function showProcessing(message) {
+      processingText.textContent =
+        message || "Processing...";
+
+      processingOverlay.classList.add(
+        "show"
+      );
+
+      document
+        .querySelectorAll("button")
+        .forEach(function(button) {
+          button.disabled = true;
+        });
+    }
+
+
+    function hideProcessing() {
+      processingOverlay.classList.remove(
+        "show"
+      );
+
+      document
+        .querySelectorAll("button")
+        .forEach(function(button) {
+          button.disabled = false;
+        });
+    }
+
+
+    /* ===================================================
+       4. MESSAGE HELPER
+       =================================================== */
+
+    function showMessage(
+      elementId,
+      message,
+      type
+    ) {
+      const element =
+        document.getElementById(
+          elementId
+        );
+
+      element.innerHTML = "";
+
+      if (!message) {
+        return;
+      }
+
+      const box =
+        document.createElement("div");
+
+      box.className =
+        "message " + (type || "");
+
+      box.textContent = message;
+
+      element.appendChild(box);
+    }
+
+
+    /* ===================================================
+       5. API HELPER WITH TIMEOUT
+       =================================================== */
+
+    async function apiRequest(
+      action,
+      payload
+    ) {
+      const controller =
+        new AbortController();
+
+      const timeoutId =
+        setTimeout(
+          function() {
+            controller.abort();
+          },
+          REQUEST_TIMEOUT
+        );
+
+      const requestData =
+        Object.assign(
+          {},
+          payload || {},
+          {
+            action: action,
+            token: adminToken
+          }
+        );
+
+      try {
+        const response = await fetch(
+          API_URL,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "text/plain;charset=utf-8"
+            },
+
+            body: JSON.stringify(
+              requestData
+            ),
+
+            signal:
+              controller.signal
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            "Server response error: " +
+            response.status
+          );
+        }
+
+        return await response.json();
+
+      } catch (error) {
+        if (
+          error.name === "AbortError"
+        ) {
+          throw new Error(
+            "Server response ढिलो भयो। " +
+            "Apps Script deployment check गर्नुहोस्।"
+          );
+        }
+
+        throw error;
+
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    }
+
+
+    /* ===================================================
+       6. LOGIN
+       =================================================== */
+
+    async function login() {
+      const username =
+        usernameInput.value.trim();
+
+      const password =
+        passwordInput.value;
+
+      if (!username || !password) {
+        showMessage(
+          "loginMessage",
+          "Username र Password लेख्नुहोस्।",
+          "error"
+        );
+
+        return;
+      }
+
+      showProcessing(
+        "Login हुँदैछ..."
+      );
+
+      try {
+        const result =
+          await apiRequest(
+            "login",
+            {
+              username: username,
+              password: password
+            }
+          );
+
+        if (!result.ok) {
+          throw new Error(
+            result.message ||
+            "Login failed."
+          );
+        }
+
+        adminToken = result.token;
+
+        localStorage.setItem(
+          "hubAdminToken",
+          adminToken
+        );
+
+        showAdminPanel();
+
+        await loadOfficers();
+
+      } catch (error) {
+        showMessage(
+          "loginMessage",
+          error.message ||
+          "Login हुन सकेन।",
+          "error"
+        );
+
+      } finally {
+        hideProcessing();
+      }
+    }
+
+
+    function showAdminPanel() {
+      loginBox.classList.add(
+        "hidden"
+      );
+
+      adminPanel.classList.remove(
+        "hidden"
+      );
+    }
+
+
+    function logout() {
+      localStorage.removeItem(
+        "hubAdminToken"
+      );
+
+      adminToken = "";
+      selectedMember = null;
+      editingOfficerId = "";
+
+      location.reload();
+    }
+
+
+    /* ===================================================
+       7. MEMBER SEARCH
+       =================================================== */
+
+    async function searchMember() {
+      const membershipNumber =
+        membershipInput.value.trim();
+
+      if (!membershipNumber) {
+        showMessage(
+          "searchMessage",
+          "Membership Number लेख्नुहोस्।",
+          "error"
+        );
+
+        return;
+      }
+
+      showProcessing(
+        "Member खोजिँदैछ..."
+      );
+
+      try {
+        const result =
+          await apiRequest(
+            "searchMember",
+            {
+              membershipNumber:
+                membershipNumber
+            }
+          );
+
+        if (!result.ok) {
+          throw new Error(
+            result.message ||
+            "Member भेटिएन।"
+          );
+        }
+
+        selectedMember =
+          result.member;
+
+        renderMember(
+          selectedMember
+        );
+
+        showMessage(
+          "searchMessage",
+          "Member found.",
+          "success"
+        );
+
+      } catch (error) {
+        selectedMember = null;
+
+        memberPreview.classList.add(
+          "hidden"
+        );
+
+        showMessage(
+          "searchMessage",
+          error.message ||
+          "Member search हुन सकेन।",
+          "error"
+        );
+
+      } finally {
+        hideProcessing();
+      }
+    }
+
+
+    function renderMember(member) {
+      memberName.textContent =
+        member.Name || "";
+
+      memberDetails.innerHTML = "";
+
+      const lines = [
+        [
+          "Membership No.",
+          member.MembershipNumber
+        ],
+        [
+          "Mobile",
+          member.Mobile
+        ],
+        [
+          "Email",
+          member.Email
+        ],
+        [
+          "Address",
+          member.Address
+        ],
+        [
+          "Profession / Business",
+          member.Profession
+        ],
+        [
+          "Blood Group",
+          member.BloodGroup
+        ]
+      ];
+
+      lines.forEach(function(item) {
+        if (!item[1]) {
+          return;
+        }
+
+        const line =
+          document.createElement("div");
+
+        line.textContent =
+          item[0] +
+          ": " +
+          item[1];
+
+        memberDetails.appendChild(
+          line
+        );
+      });
+
+      if (member.PhotoURL) {
+        memberPhoto.src =
+          member.PhotoURL;
+
+        memberPhoto.style.visibility =
+          "visible";
+
+      } else {
+        memberPhoto.removeAttribute(
+          "src"
+        );
+
+        memberPhoto.style.visibility =
+          "hidden";
+      }
+
+      memberPreview.classList.remove(
+        "hidden"
+      );
+    }
+
+
+    /* ===================================================
+       8. PHOTO UPLOAD / REMOVE
+       =================================================== */
+
+    async function uploadPhoto() {
+      if (!selectedMember) {
+        alert(
+          "पहिले Membership Number Search गर्नुहोस्।"
+        );
+
+        return;
+      }
+
+      const file =
+        photoFile.files[0];
+
+      if (!file) {
+        alert(
+          "Photo select गर्नुहोस्।"
+        );
+
+        return;
+      }
+
+      if (
+        !file.type.startsWith(
+          "image/"
+        )
+      ) {
+        alert(
+          "Image file मात्र select गर्नुहोस्।"
+        );
+
+        return;
+      }
+
+      if (
+        file.size >
+        2 * 1024 * 1024
+      ) {
+        alert(
+          "Photo 2MB भन्दा सानो राख्नुहोस्।"
+        );
+
+        return;
+      }
+
+      showProcessing(
+        "Photo upload हुँदैछ..."
+      );
+
+      try {
+        const base64 =
+          await fileToBase64(file);
+
+        const result =
+          await apiRequest(
+            "uploadPhoto",
+            {
+              membershipNumber:
+                selectedMember
+                  .MembershipNumber,
+
+              fileName:
+                file.name,
+
+              mimeType:
+                file.type,
+
+              base64:
+                base64
+            }
+          );
+
+        if (!result.ok) {
+          throw new Error(
+            result.message ||
+            "Photo upload failed."
+          );
+        }
+
+        alert(result.message);
+
+        photoFile.value = "";
+
+        await searchMember();
+
+      } catch (error) {
+        alert(
+          error.message ||
+          "Photo upload हुन सकेन।"
+        );
+
+      } finally {
+        hideProcessing();
+      }
+    }
+
+
+    async function removePhoto() {
+      if (!selectedMember) {
+        alert(
+          "पहिले Membership Number Search गर्नुहोस्।"
+        );
+
+        return;
+      }
+
+      const confirmed =
+        confirm(
+          "यो member को photo remove गर्ने?"
+        );
+
+      if (!confirmed) {
+        return;
+      }
+
+      showProcessing(
+        "Photo remove हुँदैछ..."
+      );
+
+      try {
+        const result =
+          await apiRequest(
+            "removePhoto",
+            {
+              membershipNumber:
+                selectedMember
+                  .MembershipNumber
+            }
+          );
+
+        if (!result.ok) {
+          throw new Error(
+            result.message ||
+            "Photo remove failed."
+          );
+        }
+
+        alert(result.message);
+
+        await searchMember();
+
+      } catch (error) {
+        alert(
+          error.message ||
+          "Photo remove हुन सकेन।"
+        );
+
+      } finally {
+        hideProcessing();
+      }
+    }
+
+
+    function fileToBase64(file) {
+      return new Promise(
+        function(resolve, reject) {
+          const reader =
+            new FileReader();
+
+          reader.onload =
+            function() {
+              const result =
+                String(
+                  reader.result || ""
+                );
+
+              resolve(
+                result.split(",")[1]
+              );
+            };
+
+          reader.onerror =
+            function() {
+              reject(
+                new Error(
+                  "Photo read हुन सकेन।"
+                )
+              );
+            };
+
+          reader.readAsDataURL(file);
+        }
+      );
+    }
+
+
+    /* ===================================================
+       9. SAVE OFFICER
+       =================================================== */
+
+    async function saveOfficer() {
+      if (!selectedMember) {
+        alert(
+          "पहिले Membership Number Search गर्नुहोस्।"
+        );
+
+        return;
+      }
+
+      const position =
+        document
+          .getElementById(
+            "position"
+          )
+          .value
+          .trim();
+
+      if (!position) {
+        alert(
+          "Position लेख्नुहोस्।"
+        );
+
+        return;
+      }
+
+      showProcessing(
+        "Officer save हुँदैछ..."
+      );
+
+      try {
+        const result =
+          await apiRequest(
+            "saveOfficer",
+            {
+              officerId:
+                editingOfficerId,
+
+              membershipNumber:
+                selectedMember
+                  .MembershipNumber,
+
+              category:
+                document
+                  .getElementById(
+                    "category"
+                  )
+                  .value
+                  .trim(),
+
+              position:
+                position,
+
+              ly:
+                document
+                  .getElementById(
+                    "ly"
+                  )
+                  .value
+                  .trim(),
+
+              startDate:
+                document
+                  .getElementById(
+                    "startDate"
+                  )
+                  .value,
+
+              endDate:
+                document
+                  .getElementById(
+                    "endDate"
+                  )
+                  .value,
+
+              displayOrder:
+                document
+                  .getElementById(
+                    "displayOrder"
+                  )
+                  .value,
+
+              active:
+                document
+                  .getElementById(
+                    "activeStatus"
+                  )
+                  .value
+            }
+          );
+
+        if (!result.ok) {
+          throw new Error(
+            result.message ||
+            "Save failed."
+          );
+        }
+
+        editingOfficerId = "";
+
+        showMessage(
+          "saveMessage",
+          result.message,
+          "success"
+        );
+
+        await loadOfficers();
+
+      } catch (error) {
+        showMessage(
+          "saveMessage",
+          error.message ||
+          "Officer save हुन सकेन।",
+          "error"
+        );
+
+      } finally {
+        hideProcessing();
+      }
+    }
+
+
+    /* ===================================================
+       10. OFFICER LIST
+       =================================================== */
+
+    async function loadOfficers() {
+      try {
+        const result =
+          await apiRequest(
+            "adminListOfficers"
+          );
+
+        if (!result.ok) {
+          throw new Error(
+            result.message ||
+            "Officer list load failed."
+          );
+        }
+
+        renderOfficerList(
+          result.officers || []
+        );
+
+      } catch (error) {
+        officerList.textContent =
+          error.message ||
+          "Officer list load हुन सकेन।";
+      }
+    }
+
+
+    function renderOfficerList(officers) {
+      officerList.innerHTML = "";
+
+      if (!officers.length) {
+        officerList.textContent =
+          "अहिलेसम्म officer assign गरिएको छैन।";
+
+        return;
+      }
+
+      officers.forEach(
+        function(officer) {
+          const item =
+            document.createElement(
+              "div"
+            );
+
+          item.className =
+            "list-item";
+
+
+          const info =
+            document.createElement(
+              "div"
+            );
+
+          const title =
+            document.createElement(
+              "strong"
+            );
+
+          title.textContent =
+            officer.Position || "";
+
+          info.appendChild(title);
+
+          info.appendChild(
+            document.createElement(
+              "br"
+            )
+          );
+
+          info.appendChild(
+            document.createTextNode(
+              (officer.Name || "") +
+              " (" +
+              (officer.MembershipNumber || "") +
+              ")"
+            )
+          );
+
+          info.appendChild(
+            document.createElement(
+              "br"
+            )
+          );
+
+          const small =
+            document.createElement(
+              "small"
+            );
+
+          small.textContent =
+            "LY " +
+            (officer.LY || "") +
+            " • " +
+            (officer.Active || "");
+
+          info.appendChild(small);
+
+
+          const actions =
+            document.createElement(
+              "div"
+            );
+
+          actions.className =
+            "toolbar";
+
+
+          const editButton =
+            document.createElement(
+              "button"
+            );
+
+          editButton.type =
+            "button";
+
+          editButton.textContent =
+            "Edit";
+
+          editButton.addEventListener(
+            "click",
+            function() {
+              editOfficer(officer);
+            }
+          );
+
+
+          const inactiveButton =
+            document.createElement(
+              "button"
+            );
+
+          inactiveButton.type =
+            "button";
+
+          inactiveButton.className =
+            "danger";
+
+          inactiveButton.textContent =
+            "Inactive";
+
+          inactiveButton.addEventListener(
+            "click",
+            function() {
+              deactivateOfficer(
+                officer.OfficerID
+              );
+            }
+          );
+
+
+          actions.appendChild(
+            editButton
+          );
+
+          actions.appendChild(
+            inactiveButton
+          );
+
+          item.appendChild(info);
+          item.appendChild(actions);
+
+          officerList.appendChild(
+            item
+          );
+        }
+      );
+    }
+
+
+    async function editOfficer(officer) {
+      editingOfficerId =
+        officer.OfficerID || "";
+
+      membershipInput.value =
+        officer.MembershipNumber || "";
+
+      document
+        .getElementById(
+          "category"
+        )
+        .value =
+          officer.Category || "";
+
+      document
+        .getElementById(
+          "position"
+        )
+        .value =
+          officer.Position || "";
+
+      document
+        .getElementById(
+          "ly"
+        )
+        .value =
+          officer.LY || "";
+
+      document
+        .getElementById(
+          "displayOrder"
+        )
+        .value =
+          officer.DisplayOrder || 1;
+
+      document
+        .getElementById(
+          "startDate"
+        )
+        .value =
+          normalizeDateForInput(
+            officer.StartDate
+          );
+
+      document
+        .getElementById(
+          "endDate"
+        )
+        .value =
+          normalizeDateForInput(
+            officer.EndDate
+          );
+
+      document
+        .getElementById(
+          "activeStatus"
+        )
+        .value =
+          officer.Active || "Yes";
+
+      await searchMember();
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+
+    async function deactivateOfficer(
+      officerId
+    ) {
+      const confirmed =
+        confirm(
+          "Officer लाई Inactive गर्ने?"
+        );
+
+      if (!confirmed) {
+        return;
+      }
+
+      showProcessing(
+        "Officer update हुँदैछ..."
+      );
+
+      try {
+        const result =
+          await apiRequest(
+            "deactivateOfficer",
+            {
+              officerId:
+                officerId
+            }
+          );
+
+        if (!result.ok) {
+          throw new Error(
+            result.message ||
+            "Update failed."
+          );
+        }
+
+        await loadOfficers();
+
+      } catch (error) {
+        alert(
+          error.message ||
+          "Update हुन सकेन।"
+        );
+
+      } finally {
+        hideProcessing();
+      }
+    }
+
+
+    function normalizeDateForInput(value) {
+      if (!value) {
+        return "";
+      }
+
+      const text =
+        String(value).trim();
+
+      if (
+        /^\d{4}-\d{2}-\d{2}$/
+          .test(text)
+      ) {
+        return text;
+      }
+
+      const date =
+        new Date(text);
+
+      if (
+        Number.isNaN(
+          date.getTime()
+        )
+      ) {
+        return "";
+      }
+
+      const year =
+        date.getFullYear();
+
+      const month =
+        String(
+          date.getMonth() + 1
+        ).padStart(2, "0");
+
+      const day =
+        String(
+          date.getDate()
+        ).padStart(2, "0");
+
+      return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+      );
+    }
+
+
+    /* ===================================================
+       11. BUTTON EVENTS
+       No inline onclick dependency.
+       =================================================== */
+
+    document
+      .getElementById(
+        "loginButton"
+      )
+      .addEventListener(
+        "click",
+        login
+      );
+
+    document
+      .getElementById(
+        "homeButton"
+      )
+      .addEventListener(
+        "click",
+        function() {
+          location.href =
+            "index.html";
+        }
+      );
+
+    document
+      .getElementById(
+        "logoutButton"
+      )
+      .addEventListener(
+        "click",
+        logout
+      );
+
+    document
+      .getElementById(
+        "searchButton"
+      )
+      .addEventListener(
+        "click",
+        searchMember
+      );
+
+    document
+      .getElementById(
+        "uploadPhotoButton"
+      )
+      .addEventListener(
+        "click",
+        uploadPhoto
+      );
+
+    document
+      .getElementById(
+        "removePhotoButton"
+      )
+      .addEventListener(
+        "click",
+        removePhoto
+      );
+
+    document
+      .getElementById(
+        "saveOfficerButton"
+      )
+      .addEventListener(
+        "click",
+        saveOfficer
+      );
+
+
+    passwordInput.addEventListener(
+      "keydown",
+      function(event) {
+        if (event.key === "Enter") {
+          login();
+        }
+      }
+    );
+
+
+    membershipInput.addEventListener(
+      "keydown",
+      function(event) {
+        if (event.key === "Enter") {
+          searchMember();
+        }
+      }
+    );
+
+
+    /* ===================================================
+       12. INITIAL SESSION
+       =================================================== */
+
+    if (adminToken) {
+      showAdminPanel();
+
+      showProcessing(
+        "Admin data load हुँदैछ..."
+      );
+
+      loadOfficers()
+        .finally(function() {
+          hideProcessing();
+        });
+    }
+  </script>
+</body>
+
+</html>
