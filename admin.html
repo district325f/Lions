@@ -2100,7 +2100,9 @@
 
           if (protocolMode) {
             const isActive =
-              String(officer.Active || "").toLowerCase() === "active";
+              ["active", "yes", "true", "1"].includes(
+                String(officer.Active || "").trim().toLowerCase()
+              );
 
             const activeOfficers =
               protocolDraft.filter(function(item) {
@@ -2262,12 +2264,16 @@
     function moveProtocolOfficer(officerId, direction) {
       const active =
         protocolDraft.filter(function(officer) {
-          return String(officer.Active || "").toLowerCase() === "active";
+          return ["active", "yes", "true", "1"].includes(
+                String(officer.Active || "").trim().toLowerCase()
+              );
         });
 
       const inactive =
         protocolDraft.filter(function(officer) {
-          return String(officer.Active || "").toLowerCase() !== "active";
+          return !["active", "yes", "true", "1"].includes(
+            String(officer.Active || "").trim().toLowerCase()
+          );
         });
 
       const index =
@@ -2299,7 +2305,9 @@
       const activeIds =
         protocolDraft
           .filter(function(officer) {
-            return String(officer.Active || "").toLowerCase() === "active";
+            return ["active", "yes", "true", "1"].includes(
+                String(officer.Active || "").trim().toLowerCase()
+              );
           })
           .map(function(officer) {
             return officer.OfficerID;
