@@ -1,5 +1,833 @@
-<!DOCTYPE html><html lang="ne"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>About District 325F</title><style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,'Noto Sans Devanagari',sans-serif}body{background:linear-gradient(180deg,#edf9fc,#f8fbff);color:#10233f;padding-bottom:95px}.app{max-width:1100px;margin:auto;padding:18px}.top{display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:18px}.back{position:absolute;left:0;font-size:34px;color:#0d47a1;text-decoration:none}.top h1{font-size:27px;color:#102d61}.hero{background:linear-gradient(135deg,#0d47a1,#1976d2);color:#fff;border-radius:30px;padding:28px 20px;text-align:center;box-shadow:0 15px 35px #0002}.logo{width:100px;height:100px;object-fit:contain;background:#fff;padding:7px;border-radius:50%;margin:0 auto 15px;display:none}.hero h2{font-size:35px}.hero p{font-size:21px;margin-top:6px}.slogan{display:inline-block;margin-top:17px;padding-top:13px;border-top:3px solid #f4b400;font-style:italic}.info{background:#fff;border-radius:24px;padding:22px;box-shadow:0 10px 28px #0001;margin-top:20px}.info h2{color:#0d47a1;margin-bottom:12px}.info p{color:#344054;line-height:1.65}.offTitle{text-align:center;margin:28px 0 5px;color:#0d47a1;font-size:28px}.ly{text-align:center;color:#667085;margin-bottom:18px}.officers{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.officer{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 10px 28px #0001;border-top:5px solid #0d47a1}.officer.primary{grid-column:1/-1;max-width:650px;width:100%;margin:auto;border-top-color:#f4b400}.officerHead{background:#0d47a1;color:#fff;text-align:center;padding:10px;font-weight:bold}.officerBody{display:flex;gap:16px;padding:16px;align-items:center}.officer img{width:120px;height:145px;object-fit:cover;border-radius:16px;background:#eef2f7}.officer.primary img{width:155px;height:185px}.details h3{font-size:22px;color:#102d61;margin-bottom:8px}.details p{font-size:14px;color:#475467;line-height:1.65}.empty{text-align:center;background:#fff;border-radius:22px;padding:28px;color:#667085;grid-column:1/-1}.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;box-shadow:0 -8px 25px #0002;display:flex;justify-content:space-around;padding:10px 0;z-index:999}.nav{font-size:12px;text-align:center;color:#42526e;text-decoration:none}.nav span{display:block;font-size:24px}.nav.active{color:#0d47a1;font-weight:bold}@media(max-width:700px){.top h1{font-size:22px}.hero h2{font-size:29px}.officers{grid-template-columns:1fr}.officer.primary{grid-column:auto}.officerBody{align-items:flex-start}.officer img,.officer.primary img{width:105px;height:130px}.details h3{font-size:18px}}
-</style></head><body><div class="app"><div class="top"><a class="back" href="index.html">←</a><h1>About District 325F</h1></div><div class="hero"><img id="lionsLogo" class="logo" alt="Lions Logo"><h2>Lions International</h2><p>District 325 F, Nepal</p><div class="slogan">Service • Leadership • Community • Together</div></div><div class="info"><h2>About District 325F</h2><p id="districtInformation"></p></div><h2 class="offTitle">District Officers</h2><div class="ly" id="lyText"></div><div class="officers" id="officers"><div class="empty">Officer data loading...</div></div></div><div class="bottom"><a class="nav" href="index.html"><span>🏠</span>Home</a><a class="nav" href="index.html#systemGrid"><span>📱</span>Systems</a><a class="nav active" href="about.html"><span>ℹ️</span>About</a><a class="nav" href="admin.html"><span>⚙️</span>Admin</a></div><script>
-const API_URL="https://script.google.com/macros/s/AKfycbz1hmQLbm4wa5qheEu2ErIt-ni0r24IenrMHZGaYZu8YtMCmtDHMR0-s6NuFZEifRl8QQ/exec";function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}fetch(API_URL+"?action=about").then(r=>r.json()).then(data=>{if(data.settings){const l=document.getElementById("lionsLogo");if(data.settings.LogoURL){l.src=data.settings.LogoURL;l.style.display="block"}document.getElementById("districtInformation").innerText=data.settings.AboutText||""}const list=data.officers||[],box=document.getElementById("officers");box.innerHTML="";if(data.currentLY)lyText.innerText="LY "+data.currentLY;if(!list.length){box.innerHTML='<div class="empty">Active District Officer data उपलब्ध छैन।</div>';return}list.forEach((o,i)=>{const d=document.createElement("div");d.className="officer"+(i===0?" primary":"");d.innerHTML=`<div class="officerHead">${esc(o.Position||"District Officer")}</div><div class="officerBody"><img src="${esc(o.PhotoURL||"")}" onerror="this.style.visibility='hidden'"><div class="details"><h3>${esc(o.Name||"")}</h3><p><b>Membership No:</b> ${esc(o.MembershipNumber||"")}</p>${o.Mobile?`<p>📞 ${esc(o.Mobile)}</p>`:""}${o.Email?`<p>✉️ ${esc(o.Email)}</p>`:""}${o.Address?`<p>📍 ${esc(o.Address)}</p>`:""}${o.Profession?`<p>💼 ${esc(o.Profession)}</p>`:""}${o.BloodGroup?`<p>🩸 ${esc(o.BloodGroup)}</p>`:""}</div></div>`;box.appendChild(d)})}).catch(()=>officers.innerHTML='<div class="empty">Officer data load हुन सकेन।</div>');
-</script></body></html>
+<!DOCTYPE html>
+<html lang="ne">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>About District 325F</title>
+
+  <style>
+    /* =====================================================
+       1. BASE
+       ===================================================== */
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+
+      font-family:
+        Arial,
+        "Noto Sans Devanagari",
+        sans-serif;
+    }
+
+    body {
+      background:
+        linear-gradient(
+          180deg,
+          #edf9fc,
+          #f8fbff
+        );
+
+      color: #10233f;
+      padding-bottom: 95px;
+    }
+
+    .app {
+      max-width: 1100px;
+      margin: auto;
+      padding: 18px;
+    }
+
+
+    /* =====================================================
+       2. TOP / HERO
+       ===================================================== */
+
+    .top {
+      position: relative;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-bottom: 18px;
+    }
+
+    .back {
+      position: absolute;
+      left: 0;
+
+      color: #0d47a1;
+      font-size: 34px;
+      text-decoration: none;
+    }
+
+    .top h1 {
+      color: #102d61;
+      font-size: 27px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+
+      padding: 28px 20px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #0d47a1,
+          #1976d2
+        );
+
+      color: white;
+      text-align: center;
+
+      border-radius: 30px;
+
+      box-shadow:
+        0 15px 35px #0002;
+    }
+
+    .logo {
+      display: none;
+
+      width: 100px;
+      height: 100px;
+
+      margin:
+        0 auto 15px;
+
+      padding: 7px;
+
+      object-fit: contain;
+
+      background: white;
+      border-radius: 50%;
+    }
+
+    .hero h2 {
+      font-size: 35px;
+    }
+
+    .hero p {
+      margin-top: 6px;
+      font-size: 21px;
+    }
+
+    .slogan {
+      display: inline-block;
+
+      margin-top: 17px;
+      padding-top: 13px;
+
+      border-top:
+        3px solid #f4b400;
+
+      font-style: italic;
+    }
+
+
+    /* =====================================================
+       3. DISTRICT INFO
+       ===================================================== */
+
+    .info {
+      margin-top: 20px;
+      padding: 22px;
+
+      background: white;
+      border-radius: 24px;
+
+      box-shadow:
+        0 10px 28px #00000012;
+    }
+
+    .info h2 {
+      margin-bottom: 12px;
+      color: #0d47a1;
+    }
+
+    .info p {
+      margin-bottom: 10px;
+
+      color: #344054;
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+
+    /* =====================================================
+       4. OFFICERS
+       ===================================================== */
+
+    .officers-title {
+      margin:
+        28px 0 8px;
+
+      color: #0d47a1;
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .ly {
+      margin-bottom: 18px;
+      color: #667085;
+      text-align: center;
+    }
+
+    .officers {
+      display: grid;
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      gap: 18px;
+    }
+
+    .officer {
+      overflow: hidden;
+
+      background: white;
+
+      border-radius: 24px;
+      border-top:
+        5px solid #0d47a1;
+
+      box-shadow:
+        0 10px 28px #00000014;
+    }
+
+    .officer.primary {
+      grid-column: 1 / -1;
+
+      width: 100%;
+      max-width: 650px;
+      margin: auto;
+
+      border-top-color:
+        #f4b400;
+    }
+
+    .officer-head {
+      padding: 10px;
+
+      background: #0d47a1;
+      color: white;
+
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .officer.primary
+    .officer-head {
+      background: #123b78;
+    }
+
+    .officer-body {
+      display: grid;
+      grid-template-columns:
+        135px 1fr;
+
+      gap: 17px;
+      align-items: start;
+
+      padding: 17px;
+    }
+
+    .officer-photo {
+      width: 135px;
+      height: 165px;
+
+      object-fit: cover;
+
+      background: #eef2f7;
+      border-radius: 15px;
+    }
+
+    .officer.primary
+    .officer-photo {
+      width: 155px;
+      height: 190px;
+    }
+
+    .photo-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 135px;
+      height: 165px;
+
+      padding: 10px;
+
+      background: #eef2f7;
+      color: #667085;
+
+      border-radius: 15px;
+
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .details h3 {
+      margin-bottom: 9px;
+
+      color: #102d61;
+      font-size: 22px;
+    }
+
+    .detail-line {
+      margin-bottom: 3px;
+
+      color: #475467;
+      font-size: 14px;
+      line-height: 1.5;
+
+      overflow-wrap: anywhere;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+
+      padding: 28px;
+
+      background: white;
+      color: #667085;
+
+      border-radius: 22px;
+
+      text-align: center;
+    }
+
+
+    /* =====================================================
+       5. BOTTOM NAV
+       ===================================================== */
+
+    .bottom {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 999;
+
+      display: flex;
+      justify-content: space-around;
+
+      padding: 10px 0;
+
+      background: white;
+
+      box-shadow:
+        0 -8px 25px #0002;
+    }
+
+    .nav {
+      color: #42526e;
+
+      font-size: 12px;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .nav span {
+      display: block;
+      font-size: 24px;
+    }
+
+    .nav.active {
+      color: #0d47a1;
+      font-weight: bold;
+    }
+
+
+    /* =====================================================
+       6. MOBILE
+       ===================================================== */
+
+    @media (max-width: 700px) {
+      .top h1 {
+        font-size: 22px;
+      }
+
+      .hero h2 {
+        font-size: 29px;
+      }
+
+      .officers {
+        grid-template-columns: 1fr;
+      }
+
+      .officer.primary {
+        grid-column: auto;
+      }
+
+      .officer-body,
+      .officer.primary
+      .officer-body {
+        grid-template-columns:
+          105px 1fr;
+      }
+
+      .officer-photo,
+      .officer.primary
+      .officer-photo,
+      .photo-placeholder {
+        width: 105px;
+        height: 130px;
+      }
+
+      .details h3 {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <div class="top">
+      <a
+        class="back"
+        href="index.html"
+      >
+        ←
+      </a>
+
+      <h1>
+        About District 325F
+      </h1>
+    </div>
+
+
+    <div class="hero">
+
+      <img
+        id="lionsLogo"
+        class="logo"
+        src=""
+        alt="Lions Logo"
+      >
+
+      <h2>
+        Lions International
+      </h2>
+
+      <p>
+        District 325 F, Nepal
+      </p>
+
+      <div class="slogan">
+        Service • Leadership • Community • Together
+      </div>
+
+    </div>
+
+
+    <div class="info">
+
+      <h2>
+        About District 325F
+      </h2>
+
+      <p id="districtInformation">
+        District information will be updated from the system.
+      </p>
+
+    </div>
+
+
+    <h2 class="officers-title">
+      District Officers
+    </h2>
+
+    <div
+      id="lyText"
+      class="ly"
+    >
+    </div>
+
+
+    <div
+      id="officers"
+      class="officers"
+    >
+      <div class="empty">
+        Officer data loading...
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="bottom">
+
+    <a
+      class="nav"
+      href="index.html"
+    >
+      <span>🏠</span>
+      Home
+    </a>
+
+    <a
+      class="nav"
+      href="index.html#systemGrid"
+    >
+      <span>📱</span>
+      Systems
+    </a>
+
+    <a
+      class="nav active"
+      href="about.html"
+    >
+      <span>ℹ️</span>
+      About
+    </a>
+
+    <a
+      class="nav"
+      href="admin.html"
+    >
+      <span>⚙️</span>
+      Admin
+    </a>
+
+  </div>
+
+
+  <script>
+    /* ===================================================
+       1. CONFIGURATION
+       =================================================== */
+
+    const API_URL =
+      "https://script.google.com/macros/s/" +
+      "AKfycbz1hmQLbm4wa5qheEu2ErIt-ni0r24IenrMHZGaYZu8YtMCmtDHMR0-s6NuFZEifRl8QQ" +
+      "/exec";
+
+
+    /* ===================================================
+       2. LOAD ABOUT DATA
+       =================================================== */
+
+    fetch(
+      API_URL +
+      "?action=about"
+    )
+      .then(
+        function(response) {
+          return response.json();
+        }
+      )
+      .then(
+        function(data) {
+          applySettings(
+            data.settings
+          );
+
+          renderOfficers(
+            data.officers || [],
+            data.currentLY || ""
+          );
+        }
+      )
+      .catch(
+        function() {
+          document
+            .getElementById(
+              "officers"
+            )
+            .innerHTML =
+              '<div class="empty">' +
+              'Officer data load हुन सकेन।' +
+              '</div>';
+        }
+      );
+
+
+    /* ===================================================
+       3. SETTINGS
+       =================================================== */
+
+    function applySettings(settings) {
+      if (!settings) {
+        return;
+      }
+
+      const logo =
+        document.getElementById(
+          "lionsLogo"
+        );
+
+      if (settings.LogoURL) {
+        logo.src =
+          settings.LogoURL;
+
+        logo.style.display =
+          "block";
+      }
+
+      if (settings.AboutText) {
+        document
+          .getElementById(
+            "districtInformation"
+          )
+          .textContent =
+            settings.AboutText;
+      }
+    }
+
+
+    /* ===================================================
+       4. OFFICERS
+       =================================================== */
+
+    function renderOfficers(
+      officers,
+      currentLY
+    ) {
+      const container =
+        document.getElementById(
+          "officers"
+        );
+
+      container.innerHTML = "";
+
+      document
+        .getElementById(
+          "lyText"
+        )
+        .textContent =
+          currentLY
+            ? "LY " + currentLY
+            : "";
+
+      if (!officers.length) {
+        container.innerHTML =
+          '<div class="empty">' +
+          'Active District Officer data उपलब्ध छैन।' +
+          '</div>';
+
+        return;
+      }
+
+      officers.forEach(
+        function(officer, index) {
+          container.appendChild(
+            createOfficerCard(
+              officer,
+              index === 0
+            )
+          );
+        }
+      );
+    }
+
+
+    function createOfficerCard(
+      officer,
+      isPrimary
+    ) {
+      const card =
+        document.createElement(
+          "div"
+        );
+
+      card.className =
+        "officer" +
+        (
+          isPrimary
+            ? " primary"
+            : ""
+        );
+
+
+      const head =
+        document.createElement(
+          "div"
+        );
+
+      head.className =
+        "officer-head";
+
+      head.textContent =
+        officer.Position ||
+        "District Officer";
+
+
+      const body =
+        document.createElement(
+          "div"
+        );
+
+      body.className =
+        "officer-body";
+
+
+      const photoBox =
+        document.createElement(
+          "div"
+        );
+
+      if (officer.PhotoURL) {
+        const image =
+          document.createElement(
+            "img"
+          );
+
+        image.className =
+          "officer-photo";
+
+        image.src =
+          officer.PhotoURL;
+
+        image.alt =
+          officer.Name ||
+          "Officer Photo";
+
+        image.onerror =
+          function() {
+            photoBox.innerHTML =
+              '<div class="photo-placeholder">' +
+              'Photo not available' +
+              '</div>';
+          };
+
+        photoBox.appendChild(
+          image
+        );
+
+      } else {
+        photoBox.innerHTML =
+          '<div class="photo-placeholder">' +
+          'Photo not available' +
+          '</div>';
+      }
+
+
+      const details =
+        document.createElement(
+          "div"
+        );
+
+      details.className =
+        "details";
+
+
+      const name =
+        document.createElement(
+          "h3"
+        );
+
+      name.textContent =
+        officer.Name || "";
+
+      details.appendChild(
+        name
+      );
+
+
+      addDetail(
+        details,
+        "📍",
+        officer.Address
+      );
+
+      addDetail(
+        details,
+        "📞",
+        officer.Mobile
+      );
+
+      addDetail(
+        details,
+        "✉️",
+        officer.Email
+      );
+
+      addDetail(
+        details,
+        "🏛️",
+        officer.ClubName
+      );
+
+      addDetail(
+        details,
+        "🪪 Member No.",
+        officer.MembershipNumber
+      );
+
+      addDetail(
+        details,
+        "🩸 Blood Group",
+        officer.BloodGroup
+      );
+
+      addDetail(
+        details,
+        "💼",
+        officer.Profession
+      );
+
+
+      body.appendChild(
+        photoBox
+      );
+
+      body.appendChild(
+        details
+      );
+
+      card.appendChild(
+        head
+      );
+
+      card.appendChild(
+        body
+      );
+
+      return card;
+    }
+
+
+    function addDetail(
+      parent,
+      label,
+      value
+    ) {
+      if (!value) {
+        return;
+      }
+
+      const line =
+        document.createElement(
+          "div"
+        );
+
+      line.className =
+        "detail-line";
+
+      line.textContent =
+        label +
+        " " +
+        value;
+
+      parent.appendChild(
+        line
+      );
+    }
+  </script>
+</body>
+
+</html>
