@@ -366,10 +366,25 @@
       margin: 0 auto 18px;
     }
 
+    .officer-search-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .officer-search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      pointer-events: none;
+      opacity: 0.75;
+    }
+
     .officer-search {
       width: 100%;
       box-sizing: border-box;
-      padding: 13px 15px;
+      padding: 13px 15px 13px 46px;
       border: 1px solid #cbd5e1;
       border-radius: 12px;
       font-size: 15px;
@@ -387,6 +402,11 @@
       color: #667085;
       font-size: 13px;
       text-align: center;
+    }
+
+    .club-detail {
+      color: #0d47a1;
+      font-weight: 700;
     }
 
     @media (max-width: 700px) {
@@ -495,13 +515,17 @@
 
 
     <div class="officer-search-wrap">
-      <input
-        id="officerSearch"
-        class="officer-search"
-        type="search"
-        placeholder="Search name, officer type, position, zone, region, club, mobile, membership no..."
-        autocomplete="off"
-      >
+      <div class="officer-search-box">
+        <span class="officer-search-icon" aria-hidden="true">🔍</span>
+        <input
+          id="officerSearch"
+          class="officer-search"
+          type="search"
+          placeholder=""
+          aria-label="Search District Officers"
+          autocomplete="off"
+        >
+      </div>
       <div id="searchResultCount" class="search-result-count"></div>
     </div>
 
@@ -871,7 +895,8 @@
       addDetail(
         details,
         "🏛️",
-        officer.ClubName
+        officer.ClubName,
+        "club-detail"
       );
 
       addPhoneDetail(
@@ -940,7 +965,8 @@
     function addDetail(
       parent,
       label,
-      value
+      value,
+      extraClass
     ) {
       if (!value) {
         return;
@@ -952,7 +978,8 @@
         );
 
       line.className =
-        "detail-line";
+        "detail-line" +
+        (extraClass ? " " + extraClass : "");
 
       line.textContent =
         label +
