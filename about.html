@@ -1041,18 +1041,35 @@
 
     function normalizePhoneNumber(value) {
       const raw = String(value || "").trim();
-      let digits = raw.replace(/\D/g, "");
+      const digits = raw.replace(/\D/g, "");
 
       if (!digits) {
         return { dial: "", whatsapp: "" };
       }
 
-      if (digits.indexOf("977") === 0) {
-        return { dial: "+" + digits, whatsapp: digits };
+      /*
+       * Lions official export can contain Nepal mobile values such as:
+       * 977-1-9851113811, 977-01-9851113811, 00977-41-9851113811,
+       * 977-977-9851113811, +9779851113811, or plain 9851113811.
+       *
+       * For Nepal mobile actions, use the final valid 10-digit mobile
+       * sequence beginning with 9. This prevents area/prefix digits such
+       * as 0, 1, 01, 41, repeated 977, or 00977 from entering SMS/Call.
+       */
+      const nepalMobileMatch = digits.match(/(9\d{9})$/);
+
+      if (nepalMobileMatch) {
+        const localMobile = nepalMobileMatch[1];
+
+        return {
+          dial: "+977" + localMobile,
+          whatsapp: "977" + localMobile
+        };
       }
 
-      if (digits.length === 10 && digits.charAt(0) === "9") {
-        return { dial: "+977" + digits, whatsapp: "977" + digits };
+      // Preserve existing fallback behavior for non-Nepal/unknown formats.
+      if (raw.charAt(0) === "+") {
+        return { dial: "+" + digits, whatsapp: digits };
       }
 
       return { dial: "+" + digits, whatsapp: digits };
