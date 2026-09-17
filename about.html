@@ -230,6 +230,10 @@
       background: #123b78;
     }
 
+    .officer.primary .officer-body {
+      grid-template-columns: 155px 1fr;
+    }
+
     .officer-body {
       display: grid;
       grid-template-columns:
@@ -246,6 +250,9 @@
       height: 165px;
 
       object-fit: cover;
+      object-position: center top;
+      display: block;
+      overflow: hidden;
 
       background: #eef2f7;
       border-radius: 15px;
@@ -352,6 +359,36 @@
        6. MOBILE
        ===================================================== */
 
+
+    .officer-search-wrap {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto 18px;
+    }
+
+    .officer-search {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 13px 15px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+      background: white;
+    }
+
+    .officer-search:focus {
+      border-color: #0d47a1;
+      box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.10);
+    }
+
+    .search-result-count {
+      margin-top: 7px;
+      color: #667085;
+      font-size: 13px;
+      text-align: center;
+    }
+
     @media (max-width: 700px) {
       .top h1 {
         font-size: 22px;
@@ -454,6 +491,18 @@
       id="lyText"
       class="ly"
     >
+    </div>
+
+
+    <div class="officer-search-wrap">
+      <input
+        id="officerSearch"
+        class="officer-search"
+        type="search"
+        placeholder="Search name, officer type, position, zone, region, club, mobile, membership no..."
+        autocomplete="off"
+      >
+      <div id="searchResultCount" class="search-result-count"></div>
     </div>
 
 
@@ -593,7 +642,71 @@
        4. OFFICERS
        =================================================== */
 
+    let allOfficers = [];
+    let loadedLY = "";
+
+
+    function normalizeSearchText(value) {
+      return String(value || "")
+        .toLowerCase()
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+
+    function getOfficerSearchText(officer) {
+      return normalizeSearchText([
+        officer.Name,
+        officer.FirstName,
+        officer.LastName,
+        officer.MembershipNumber,
+        officer.ClubName,
+        officer.Mobile,
+        officer.Email,
+        officer.Category,
+        officer.OfficerType,
+        officer.CommitteeArea,
+        officer.Position,
+        officer.ParentRegion,
+        officer.ParentZone,
+        officer.Address,
+        officer.Profession,
+        officer.BloodGroup
+      ].join(" "));
+    }
+
+
+    function filterOfficers() {
+      const query = normalizeSearchText(
+        document.getElementById("officerSearch").value
+      );
+
+      const filtered = !query
+        ? allOfficers
+        : allOfficers.filter(function(officer) {
+            return getOfficerSearchText(officer).indexOf(query) !== -1;
+          });
+
+      drawOfficers(filtered, loadedLY);
+
+      const count = document.getElementById("searchResultCount");
+      count.textContent = query
+        ? filtered.length + " officer(s) found"
+        : allOfficers.length + " active officer(s)";
+    }
+
+
     function renderOfficers(
+      officers,
+      currentLY
+    ) {
+      allOfficers = officers || [];
+      loadedLY = currentLY || "";
+      filterOfficers();
+    }
+
+
+    function drawOfficers(
       officers,
       currentLY
     ) {
@@ -850,6 +963,10 @@
         line
       );
     }
+    document
+      .getElementById("officerSearch")
+      .addEventListener("input", filterOfficers);
+
   </script>
 </body>
 
