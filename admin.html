@@ -488,6 +488,38 @@
       display: none !important;
     }
 
+  
+    .protocol-order-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      height: 34px;
+      padding: 0 8px;
+      border-radius: 8px;
+      font-weight: 700;
+      background: #eef5ff;
+      color: #0b4aa2;
+    }
+
+    .protocol-move-button {
+      min-width: 42px;
+      height: 36px;
+      padding: 0 12px;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+  
+    /* Final verified-photo protection:
+       keep DOM controls for legacy JS safety, but never display them. */
+    #photoActions,
+    #photoActionButton,
+    #removePhotoButton,
+    #photoFile {
+      display: none !important;
+    }
+
   </style>
 </head>
 
@@ -1472,12 +1504,17 @@
           .classList.remove("hidden");
 
       } else {
-        $("memberPhoto")
-          .classList.add("hidden");
+        // Display-only fallback. Never save logo.png to Sheet or Drive.
+        $("memberPhoto").src =
+          "logo.png";
 
-        $("photoPlaceholder")
+        $("memberPhoto")
           .classList.remove("hidden");
 
+        $("photoPlaceholder")
+          .classList.add("hidden");
+
+        // Controls remain in DOM only for compatibility; CSS keeps them hidden.
         $("photoActionButton")
           .textContent =
             "Add Photo";
@@ -2044,6 +2081,15 @@
     }
 
 
+    function isOfficerActive(officer) {
+      return ["active", "yes", "true", "1"].includes(
+        String(
+          officer && officer.Active || ""
+        ).trim().toLowerCase()
+      );
+    }
+
+
     function renderOfficerList(officers) {
       $("officerList").innerHTML = "";
 
@@ -2121,18 +2167,17 @@
 
           if (protocolMode) {
             const isActive =
-              ["active", "yes", "true", "1"].includes(
-                String(officer.Active || "").trim().toLowerCase()
-              );
+              isOfficerActive(officer);
 
             const activeOfficers =
               protocolDraft.filter(function(item) {
-                return String(item.Active || "").toLowerCase() === "active";
+                return isOfficerActive(item);
               });
 
             const activeIndex =
               activeOfficers.findIndex(function(item) {
-                return item.OfficerID === officer.OfficerID;
+                return String(item.OfficerID || "") ===
+                  String(officer.OfficerID || "");
               });
 
             if (isActive && activeIndex >= 0) {
@@ -2142,15 +2187,15 @@
               orderBadge.textContent =
                 String(activeIndex + 1).padStart(2, "0");
 
-              orderBadge.style.fontWeight = "700";
-              orderBadge.style.minWidth = "28px";
-              orderBadge.style.textAlign = "center";
+              orderBadge.className =
+                "protocol-order-badge";
 
               const upButton =
                 document.createElement("button");
 
               upButton.type = "button";
-              upButton.className = "secondary";
+              upButton.className =
+                "secondary protocol-move-button";
               upButton.textContent = "↑";
               upButton.title = "Move Up";
               upButton.disabled = activeIndex === 0;
@@ -2166,7 +2211,8 @@
                 document.createElement("button");
 
               downButton.type = "button";
-              downButton.className = "secondary";
+              downButton.className =
+                "secondary protocol-move-button";
               downButton.textContent = "↓";
               downButton.title = "Move Down";
               downButton.disabled =
@@ -2285,21 +2331,18 @@
     function moveProtocolOfficer(officerId, direction) {
       const active =
         protocolDraft.filter(function(officer) {
-          return ["active", "yes", "true", "1"].includes(
-                String(officer.Active || "").trim().toLowerCase()
-              );
+          return isOfficerActive(officer);
         });
 
       const inactive =
         protocolDraft.filter(function(officer) {
-          return !["active", "yes", "true", "1"].includes(
-            String(officer.Active || "").trim().toLowerCase()
-          );
+          return !isOfficerActive(officer);
         });
 
       const index =
         active.findIndex(function(officer) {
-          return officer.OfficerID === officerId;
+          return String(officer.OfficerID || "") ===
+            String(officerId || "");
         });
 
       const target = index + direction;
@@ -2326,9 +2369,7 @@
       const activeIds =
         protocolDraft
           .filter(function(officer) {
-            return ["active", "yes", "true", "1"].includes(
-                String(officer.Active || "").trim().toLowerCase()
-              );
+            return isOfficerActive(officer);
           })
           .map(function(officer) {
             return officer.OfficerID;
@@ -2344,7 +2385,7 @@
         return;
       }
 
-      showLoading(
+      showProcessing(
         "Protocol order save हुँदैछ..."
       );
 
@@ -2380,7 +2421,7 @@
           "error"
         );
       } finally {
-        hideLoading();
+        hideProcessing();
       }
     }
 
@@ -2820,75 +2861,7 @@
   </script>
 
 
-  <script>
-    (function protectVerifiedMemberPhoto() {
-      const blockedLabels = [
-        "add photo",
-        "change photo",
-        "remove photo",
-        "delete photo",
-        "replace photo"
-      ];
 
-      function removePhotoMutationControls(root) {
-        const scope = root || document;
-
-        scope
-          .querySelectorAll("button, a, label")
-          .forEach(function(element) {
-            const label =
-              String(element.textContent || "")
-                .trim()
-                .toLowerCase();
-
-            if (blockedLabels.includes(label)) {
-              element.remove();
-            }
-          });
-
-        scope
-          .querySelectorAll('input[type="file"]')
-          .forEach(function(input) {
-            const context =
-              (
-                String(input.id || "") +
-                " " +
-                String(input.name || "") +
-                " " +
-                String(input.className || "")
-              ).toLowerCase();
-
-            if (
-              context.includes("photo") ||
-              context.includes("image")
-            ) {
-              input.disabled = true;
-              input.remove();
-            }
-          });
-      }
-
-      document.addEventListener(
-        "DOMContentLoaded",
-        function() {
-          removePhotoMutationControls(document);
-
-          const observer =
-            new MutationObserver(function() {
-              removePhotoMutationControls(document);
-            });
-
-          observer.observe(
-            document.body,
-            {
-              childList: true,
-              subtree: true
-            }
-          );
-        }
-      );
-    })();
-  </script>
 
 </body>
 
