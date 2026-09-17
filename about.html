@@ -528,6 +528,18 @@
         font-size: 18px;
       }
     }
+  
+    /* Default Lions logo only. Verified member photos keep existing styling. */
+    .photo-placeholder .default-lions-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      padding: 10px;
+      box-sizing: border-box;
+      background: #ffffff;
+    }
+
   </style>
 </head>
 
@@ -938,7 +950,7 @@
           function() {
             photoBox.innerHTML =
               '<div class="photo-placeholder">' +
-              'Photo not available' +
+              '<img src="logo.png" alt="Lions Logo" class="default-lions-logo">' +
               '</div>';
           };
 
@@ -949,7 +961,7 @@
       } else {
         photoBox.innerHTML =
           '<div class="photo-placeholder">' +
-          'Photo not available' +
+          '<img src="logo.png" alt="Lions Logo" class="default-lions-logo">' +
           '</div>';
       }
 
@@ -1166,27 +1178,6 @@
       .getElementById("officerSearch")
       .addEventListener("input", filterOfficers);
 
-  </script>
-
-  <script>
-    // Display-only fallback for officers without a verified member photo.
-    // logo.png is never saved to Drive or to the officer/member database.
-    document.addEventListener(
-      "error",
-      function(event) {
-        const target = event.target;
-
-        if (
-          target &&
-          target.tagName === "IMG" &&
-          !target.dataset.defaultLogoApplied
-        ) {
-          target.dataset.defaultLogoApplied = "1";
-          target.src = "logo.png";
-        }
-      },
-      true
-    );
   </script>
 </body>
 
