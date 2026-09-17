@@ -159,6 +159,51 @@
       font-size: 12px;
     }
 
+    .required-mark {
+      color: #c62828;
+    }
+
+    .invalid-field {
+      border:
+        2px solid #d32f2f !important;
+
+      background:
+        #fff3f3 !important;
+
+      animation:
+        requiredBlink 0.75s ease-in-out
+        infinite alternate;
+    }
+
+    @keyframes requiredBlink {
+      from {
+        box-shadow:
+          0 0 0 0
+          rgba(211, 47, 47, 0.15);
+      }
+
+      to {
+        box-shadow:
+          0 0 0 5px
+          rgba(211, 47, 47, 0.22);
+      }
+    }
+
+    .photo-actions {
+      margin-top: 8px;
+    }
+
+    .photo-actions button {
+      padding: 9px 10px;
+      font-size: 13px;
+    }
+
+    .photo-add-button {
+      margin-top: 8px;
+      background: #f4b400;
+      color: #10233f;
+    }
+
 
     /* =====================================================
        3. MEMBER PREVIEW
@@ -486,89 +531,47 @@
 
 
       <!-- ===============================================
-           QUICK DEFAULTS
+           QUICK OFFICER TYPE
            =============================================== -->
 
       <div class="card quick-defaults">
-        <h2>⚡ Quick Entry Defaults</h2>
+        <h2>⚡ Officer Type</h2>
 
-        <div class="grid">
+        <div>
+          <label for="defaultCategory">
+            Default Category / Officer Type
+          </label>
 
-          <div>
-            <label for="defaultLY">
-              LY
-            </label>
+          <select id="defaultCategory">
+            <option value="District Executive Officers">
+              District Executive Officers
+            </option>
 
-            <input
-              id="defaultLY"
-              type="text"
-              value="2026/27"
-            >
-          </div>
+            <option value="Cabinet Officers">
+              Cabinet Officers
+            </option>
 
+            <option value="Region Chairpersons">
+              Region Chairpersons
+            </option>
 
-          <div>
-            <label for="defaultCategory">
-              Default Category
-            </label>
+            <option value="Zone Chairpersons">
+              Zone Chairpersons
+            </option>
 
-            <select id="defaultCategory">
-              <option value="District Executive Officers">
-                District Executive Officers
-              </option>
+            <option value="District Chairpersons">
+              District Chairpersons
+            </option>
 
-              <option value="Cabinet Officers">
-                Cabinet Officers
-              </option>
-
-              <option value="Region Chairpersons">
-                Region Chairpersons
-              </option>
-
-              <option value="Zone Chairpersons">
-                Zone Chairpersons
-              </option>
-
-              <option value="District Chairpersons">
-                District Chairpersons
-              </option>
-
-              <option value="Other">
-                Other
-              </option>
-            </select>
-          </div>
-
-
-          <div>
-            <label for="defaultStartDate">
-              Start Date
-            </label>
-
-            <input
-              id="defaultStartDate"
-              type="date"
-              value="2026-07-01"
-            >
-          </div>
-
-
-          <div>
-            <label for="defaultEndDate">
-              End Date
-            </label>
-
-            <input
-              id="defaultEndDate"
-              type="date"
-              value="2027-06-30"
-            >
-          </div>
-
+            <option value="Other">
+              Other
+            </option>
+          </select>
         </div>
 
         <div class="hint">
-          यी defaults प्रत्येक नयाँ officer search पछि automatic प्रयोग हुन्छन्।
+          यहाँ officer type एकपटक select गर्नुहोस्।
+          Member search भएपछि Category automatic यही हुन्छ।
         </div>
       </div>
 
@@ -624,6 +627,34 @@
               Photo not found
             </div>
 
+            <input
+              id="photoFile"
+              class="hidden"
+              type="file"
+              accept="image/*"
+            >
+
+            <div
+              id="photoActions"
+              class="photo-actions"
+            >
+              <button
+                id="photoActionButton"
+                class="photo-add-button"
+                type="button"
+              >
+                Add Photo
+              </button>
+
+              <button
+                id="removePhotoButton"
+                class="danger hidden"
+                type="button"
+              >
+                Remove Photo
+              </button>
+            </div>
+
           </div>
 
           <div>
@@ -674,7 +705,7 @@
 
             <div>
               <label for="profileMobile">
-                Mobile / Contact
+                Mobile / Contact <span class="required-mark">*</span>
               </label>
 
               <input
@@ -686,7 +717,7 @@
 
             <div>
               <label for="profileEmail">
-                Email
+                Email <span class="required-mark">*</span>
               </label>
 
               <input
@@ -698,7 +729,7 @@
 
             <div>
               <label for="profileClubName">
-                Club Name
+                Club Name <span class="required-mark">*</span>
               </label>
 
               <input
@@ -710,7 +741,7 @@
 
             <div class="full">
               <label for="profileAddress">
-                Address
+                Address <span class="required-mark">*</span>
               </label>
 
               <input
@@ -722,7 +753,7 @@
 
             <div>
               <label for="profileBloodGroup">
-                Blood Group
+                Blood Group <span class="required-mark">*</span>
               </label>
 
               <input
@@ -735,7 +766,7 @@
 
             <div>
               <label for="profileProfession">
-                Profession / Business
+                Profession / Business <span class="required-mark">*</span>
               </label>
 
               <input
@@ -743,35 +774,6 @@
                 type="text"
               >
             </div>
-
-          </div>
-
-
-          <br>
-
-          <div class="toolbar">
-
-            <input
-              id="photoFile"
-              type="file"
-              accept="image/*"
-            >
-
-            <button
-              id="uploadPhotoButton"
-              class="gold"
-              type="button"
-            >
-              Upload / Change Photo
-            </button>
-
-            <button
-              id="removePhotoButton"
-              class="danger"
-              type="button"
-            >
-              Remove Photo
-            </button>
 
           </div>
         </div>
@@ -783,46 +785,34 @@
            =============================================== -->
 
       <div class="card">
-        <h2>2. Assign / Edit Officer</h2>
+        <h2>2. Officer Assignment</h2>
+
+        <p class="hint">
+          Member search भएपछि Officer Type automatic आउँछ।
+          यहाँ Position मात्र select/type गर्नुहोस्।
+          LY 2026/27 र current one-year term system ले automatic save गर्छ।
+        </p>
+
+        <br>
 
         <div class="grid">
 
           <div>
             <label for="category">
-              Category
+              Officer Type
             </label>
 
-            <select id="category">
-              <option value="District Executive Officers">
-                District Executive Officers
-              </option>
-
-              <option value="Cabinet Officers">
-                Cabinet Officers
-              </option>
-
-              <option value="Region Chairpersons">
-                Region Chairpersons
-              </option>
-
-              <option value="Zone Chairpersons">
-                Zone Chairpersons
-              </option>
-
-              <option value="District Chairpersons">
-                District Chairpersons
-              </option>
-
-              <option value="Other">
-                Other
-              </option>
-            </select>
+            <input
+              id="category"
+              type="text"
+              readonly
+            >
           </div>
 
 
           <div>
             <label for="position">
-              Position *
+              Position <span class="required-mark">*</span>
             </label>
 
             <input
@@ -849,73 +839,6 @@
             <div class="hint">
               List मा नभएको position manually type गर्न मिल्छ।
             </div>
-          </div>
-
-
-          <div>
-            <label for="ly">
-              LY
-            </label>
-
-            <input
-              id="ly"
-              type="text"
-            >
-          </div>
-
-
-          <div>
-            <label for="displayOrder">
-              Display Order
-            </label>
-
-            <input
-              id="displayOrder"
-              type="number"
-              min="1"
-              value="1"
-            >
-          </div>
-
-
-          <div>
-            <label for="startDate">
-              Start Date
-            </label>
-
-            <input
-              id="startDate"
-              type="date"
-            >
-          </div>
-
-
-          <div>
-            <label for="endDate">
-              End Date
-            </label>
-
-            <input
-              id="endDate"
-              type="date"
-            >
-          </div>
-
-
-          <div>
-            <label for="activeStatus">
-              Status
-            </label>
-
-            <select id="activeStatus">
-              <option value="Yes">
-                Active
-              </option>
-
-              <option value="No">
-                Inactive
-              </option>
-            </select>
           </div>
 
 
@@ -1364,12 +1287,26 @@
         $("photoPlaceholder")
           .classList.add("hidden");
 
+        $("photoActionButton")
+          .textContent =
+            "Change Photo";
+
+        $("removePhotoButton")
+          .classList.remove("hidden");
+
       } else {
         $("memberPhoto")
           .classList.add("hidden");
 
         $("photoPlaceholder")
           .classList.remove("hidden");
+
+        $("photoActionButton")
+          .textContent =
+            "Add Photo";
+
+        $("removePhotoButton")
+          .classList.add("hidden");
       }
 
       fillProfileField(
@@ -1438,21 +1375,6 @@
     function applyQuickDefaults() {
       $("category").value =
         $("defaultCategory").value;
-
-      $("ly").value =
-        $("defaultLY").value;
-
-      $("startDate").value =
-        $("defaultStartDate").value;
-
-      $("endDate").value =
-        $("defaultEndDate").value;
-
-      $("activeStatus").value =
-        "Yes";
-
-      $("displayOrder").value =
-        nextDisplayOrder;
     }
 
 
@@ -1537,6 +1459,14 @@
         }
 
         $("photoFile").value = "";
+
+        selectedMember.PhotoURL =
+          result.photoURL || "";
+
+        $("photoActionButton")
+          .classList.remove(
+            "invalid-field"
+          );
 
         await searchMember();
 
@@ -1655,28 +1585,107 @@
         return;
       }
 
-      const position =
-        $("position")
-          .value
-          .trim();
+      const requiredFields = [
+        {
+          id: "profileName",
+          label: "Name"
+        },
+        {
+          id: "profileMobile",
+          label: "Mobile / Contact"
+        },
+        {
+          id: "profileEmail",
+          label: "Email"
+        },
+        {
+          id: "profileAddress",
+          label: "Address"
+        },
+        {
+          id: "profileClubName",
+          label: "Club Name"
+        },
+        {
+          id: "profileBloodGroup",
+          label: "Blood Group"
+        },
+        {
+          id: "profileProfession",
+          label: "Profession / Business"
+        },
+        {
+          id: "position",
+          label: "Position"
+        }
+      ];
 
-      const name =
-        $("profileName")
-          .value
-          .trim();
+      let firstInvalid = null;
+      const missing = [];
 
-      if (!name) {
-        alert(
-          "Name अनिवार्य छ।"
+      requiredFields.forEach(
+        function(field) {
+          const element =
+            $(field.id);
+
+          const isEmpty =
+            !String(
+              element.value || ""
+            ).trim();
+
+          element.classList.toggle(
+            "invalid-field",
+            isEmpty
+          );
+
+          if (isEmpty) {
+            missing.push(
+              field.label
+            );
+
+            if (!firstInvalid) {
+              firstInvalid =
+                element;
+            }
+          }
+        }
+      );
+
+      const photoMissing =
+        !selectedMember.PhotoURL;
+
+      if (photoMissing) {
+        $("photoActionButton")
+          .classList.add(
+            "invalid-field"
+          );
+
+        missing.push(
+          "Photo"
         );
-
-        return;
+      } else {
+        $("photoActionButton")
+          .classList.remove(
+            "invalid-field"
+          );
       }
 
-      if (!position) {
-        alert(
-          "Position अनिवार्य छ।"
+      if (missing.length) {
+        showMessage(
+          "saveMessage",
+          "Save गर्नुअघि पूरा गर्नुहोस्: " +
+          missing.join(", "),
+          "error"
         );
+
+        if (firstInvalid) {
+          firstInvalid.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+          });
+
+          firstInvalid.focus();
+        }
 
         return;
       }
@@ -1701,47 +1710,69 @@
                 $("category").value,
 
               position:
-                position,
-
-              ly:
-                $("ly").value.trim(),
-
-              startDate:
-                $("startDate").value,
-
-              endDate:
-                $("endDate").value,
-
-              displayOrder:
-                $("displayOrder").value,
-
-              active:
-                $("activeStatus").value,
+                $("position")
+                  .value
+                  .trim(),
 
               /*
-               * Save only officer-specific profile values.
-               * These do NOT edit the master Members sheet.
+               * Fixed current Lions Year defaults.
+               * This keeps the assignment section simple.
                */
+              ly:
+                "2026/27",
+
+              startDate:
+                "2026-07-01",
+
+              endDate:
+                "2027-06-30",
+
+              displayOrder:
+                editingOfficerId
+                  ? (
+                      window
+                        .currentEditingDisplayOrder ||
+                      nextDisplayOrder
+                    )
+                  : nextDisplayOrder,
+
+              active:
+                "Yes",
+
               manualName:
-                $("profileName").value.trim(),
+                $("profileName")
+                  .value
+                  .trim(),
 
               manualMobile:
-                $("profileMobile").value.trim(),
+                $("profileMobile")
+                  .value
+                  .trim(),
 
               manualEmail:
-                $("profileEmail").value.trim(),
+                $("profileEmail")
+                  .value
+                  .trim(),
 
               manualAddress:
-                $("profileAddress").value.trim(),
+                $("profileAddress")
+                  .value
+                  .trim(),
 
               manualClubName:
-                $("profileClubName").value.trim(),
+                $("profileClubName")
+                  .value
+                  .trim(),
 
               manualBloodGroup:
-                $("profileBloodGroup").value.trim(),
+                $("profileBloodGroup")
+                  .value
+                  .trim(),
 
               manualProfession:
-                $("profileProfession").value.trim()
+                $("profileProfession")
+                  .value
+                  .trim()
             }
           );
 
@@ -1758,6 +1789,7 @@
         );
 
         editingOfficerId = "";
+        window.currentEditingDisplayOrder = null;
 
         await loadOfficers();
 
@@ -1775,7 +1807,6 @@
         hideProcessing();
       }
     }
-
 
     function resetForNextOfficer() {
       selectedMember = null;
@@ -2027,6 +2058,10 @@
         $("profileProfession").value =
           officer.Profession || "";
 
+        $("defaultCategory").value =
+          officer.Category ||
+          "Other";
+
         $("category").value =
           officer.Category ||
           "Other";
@@ -2034,24 +2069,10 @@
         $("position").value =
           officer.Position || "";
 
-        $("ly").value =
-          officer.LY || "";
-
-        $("displayOrder").value =
-          officer.DisplayOrder || 1;
-
-        $("startDate").value =
-          normalizeDateForInput(
-            officer.StartDate
+        window.currentEditingDisplayOrder =
+          Number(
+            officer.DisplayOrder || 1
           );
-
-        $("endDate").value =
-          normalizeDateForInput(
-            officer.EndDate
-          );
-
-        $("activeStatus").value =
-          officer.Active || "Yes";
 
         window.scrollTo({
           top: 0,
@@ -2185,10 +2206,22 @@
         searchMember
       );
 
-    $("uploadPhotoButton")
+    $("photoActionButton")
       .addEventListener(
         "click",
-        uploadPhoto
+        function() {
+          $("photoFile").click();
+        }
+      );
+
+    $("photoFile")
+      .addEventListener(
+        "change",
+        function() {
+          if (this.files.length) {
+            uploadPhoto();
+          }
+        }
       );
 
     $("removePhotoButton")
@@ -2226,6 +2259,43 @@
           }
         }
       );
+
+    $("defaultCategory")
+      .addEventListener(
+        "change",
+        function() {
+          $("category").value =
+            this.value;
+        }
+      );
+
+    [
+      "profileName",
+      "profileMobile",
+      "profileEmail",
+      "profileAddress",
+      "profileClubName",
+      "profileBloodGroup",
+      "profileProfession",
+      "position"
+    ].forEach(
+      function(id) {
+        $(id).addEventListener(
+          "input",
+          function() {
+            if (
+              String(
+                this.value || ""
+              ).trim()
+            ) {
+              this.classList.remove(
+                "invalid-field"
+              );
+            }
+          }
+        );
+      }
+    );
 
 
     /* ===================================================
