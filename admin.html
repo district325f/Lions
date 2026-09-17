@@ -457,7 +457,17 @@
         flex-direction: column;
       }
     }
-  </style>
+  
+    /* Officer Admin: verified member photo is read-only. */
+    #addPhotoButton,
+    #changePhotoButton,
+    #removePhotoButton,
+    [data-photo-action="add"],
+    [data-photo-action="change"],
+    [data-photo-action="remove"] {
+      display: none !important;
+    }
+</style>
 </head>
 
 <body>
@@ -2759,6 +2769,27 @@
         });
     }
   </script>
+
+  <script>
+    // Display-only fallback. This never uploads logo.png to Drive or writes PhotoURL.
+    document.addEventListener(
+      "error",
+      function(event) {
+        const target = event.target;
+
+        if (
+          target &&
+          target.tagName === "IMG" &&
+          !target.dataset.defaultLogoApplied
+        ) {
+          target.dataset.defaultLogoApplied = "1";
+          target.src = "logo.png";
+        }
+      },
+      true
+    );
+  </script>
+
 </body>
 
 </html>
