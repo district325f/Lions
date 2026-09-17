@@ -531,52 +531,6 @@
 
 
       <!-- ===============================================
-           QUICK OFFICER TYPE
-           =============================================== -->
-
-      <div class="card quick-defaults">
-        <h2>⚡ Officer Type</h2>
-
-        <div>
-          <label for="defaultCategory">
-            Default Category / Officer Type
-          </label>
-
-          <select id="defaultCategory">
-            <option value="District Executive Officers">
-              District Executive Officers
-            </option>
-
-            <option value="Cabinet Officers">
-              Cabinet Officers
-            </option>
-
-            <option value="Region Chairpersons">
-              Region Chairpersons
-            </option>
-
-            <option value="Zone Chairpersons">
-              Zone Chairpersons
-            </option>
-
-            <option value="District Chairpersons">
-              District Chairpersons
-            </option>
-
-            <option value="Other">
-              Other
-            </option>
-          </select>
-        </div>
-
-        <div class="hint">
-          यहाँ officer type एकपटक select गर्नुहोस्।
-          Member search भएपछि Category automatic यही हुन्छ।
-        </div>
-      </div>
-
-
-      <!-- ===============================================
            SEARCH
            =============================================== -->
 
@@ -788,8 +742,7 @@
         <h2>2. Officer Assignment</h2>
 
         <p class="hint">
-          Member search भएपछि Officer Type automatic आउँछ।
-          यहाँ Position मात्र select/type गर्नुहोस्।
+          Officer Type sheet बाट select गर्नुहोस् र Position select/type गर्नुहोस्।
           LY 2026/27 र current one-year term system ले automatic save गर्छ।
         </p>
 
@@ -802,11 +755,15 @@
               Officer Type
             </label>
 
-            <input
-              id="category"
-              type="text"
-              readonly
-            >
+            <select id="category">
+              <option value="">
+                Loading Officer Type...
+              </option>
+            </select>
+
+            <div class="hint">
+              Data "Officer Type" sheet बाट आउँछ।
+            </div>
           </div>
 
 
@@ -1100,7 +1057,10 @@
 
         showAdminPanel();
 
-        await loadOfficers();
+        await Promise.all([
+          loadOfficerTypes(),
+          loadOfficers()
+        ]);
 
       } catch (error) {
         showMessage(
@@ -1130,6 +1090,62 @@
       );
 
       location.reload();
+    }
+
+
+    /* ===================================================
+       6A. OFFICER TYPE FROM SHEET
+       =================================================== */
+
+    async function loadOfficerTypes() {
+      const result =
+        await apiRequest(
+          "getOfficerTypes"
+        );
+
+      if (!result.ok) {
+        throw new Error(
+          result.message ||
+          "Officer Type load हुन सकेन।"
+        );
+      }
+
+      const select =
+        $("category");
+
+      const previousValue =
+        select.value;
+
+      select.innerHTML = "";
+
+      const types =
+        result.officerTypes || [];
+
+      types.forEach(
+        function(type) {
+          const option =
+            document.createElement(
+              "option"
+            );
+
+          option.value = type;
+          option.textContent = type;
+
+          select.appendChild(
+            option
+          );
+        }
+      );
+
+      if (
+        previousValue &&
+        types.indexOf(
+          previousValue
+        ) !== -1
+      ) {
+        select.value =
+          previousValue;
+      }
     }
 
 
@@ -1188,13 +1204,6 @@
           "searchMessage",
           "Member found. उपलब्ध data automatic fill भयो।",
           "success"
-        );
-
-        setTimeout(
-          function() {
-            $("position").focus();
-          },
-          100
         );
 
       } catch (error) {
@@ -1373,8 +1382,10 @@
        =================================================== */
 
     function applyQuickDefaults() {
-      $("category").value =
-        $("defaultCategory").value;
+      /*
+       * Officer Type remains selected for fast consecutive entry.
+       * No duplicate top Category section is required.
+       */
     }
 
 
@@ -2058,13 +2069,9 @@
         $("profileProfession").value =
           officer.Profession || "";
 
-        $("defaultCategory").value =
-          officer.Category ||
-          "Other";
-
         $("category").value =
           officer.Category ||
-          "Other";
+          "";
 
         $("position").value =
           officer.Position || "";
@@ -2260,15 +2267,6 @@
         }
       );
 
-    $("defaultCategory")
-      .addEventListener(
-        "change",
-        function() {
-          $("category").value =
-            this.value;
-        }
-      );
-
     [
       "profileName",
       "profileMobile",
@@ -2309,7 +2307,10 @@
         "Admin data load हुँदैछ..."
       );
 
-      loadOfficers()
+      Promise.all([
+        loadOfficerTypes(),
+        loadOfficers()
+      ])
         .catch(
           function(error) {
             $("officerList")
