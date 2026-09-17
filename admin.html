@@ -520,6 +520,17 @@
       display: none !important;
     }
 
+  
+    /* Default Lions logo only.
+       Verified member photos keep the existing member-photo design unchanged. */
+    #memberPhoto.default-lions-logo {
+      object-fit: contain !important;
+      object-position: center !important;
+      padding: 8px;
+      box-sizing: border-box;
+      background: #ffffff;
+    }
+
   </style>
 </head>
 
@@ -847,7 +858,7 @@
         <h2>2. Officer Assignment</h2>
 
         <p class="hint">
-          Officer Type select गर्नुहोस्।
+          Officer Type select गर्नुहोस् ।
           Committee / Area र Position Sheet अनुसार select गर्न सकिन्छ।
           LY 2026/27 र current one-year term system ले automatic save गर्छ।
         </p>
@@ -1487,6 +1498,11 @@
       );
 
       if (member.PhotoURL) {
+        $("memberPhoto")
+          .classList.remove(
+            "default-lions-logo"
+          );
+
         $("memberPhoto").src =
           member.PhotoURL;
 
@@ -1505,6 +1521,11 @@
 
       } else {
         // Display-only fallback. Never save logo.png to Sheet or Drive.
+        $("memberPhoto")
+          .classList.add(
+            "default-lions-logo"
+          );
+
         $("memberPhoto").src =
           "logo.png";
 
@@ -1854,25 +1875,6 @@
           }
         }
       );
-
-      const photoMissing =
-        !selectedMember.PhotoURL;
-
-      if (photoMissing) {
-        $("photoActionButton")
-          .classList.add(
-            "invalid-field"
-          );
-
-        missing.push(
-          "Photo"
-        );
-      } else {
-        $("photoActionButton")
-          .classList.remove(
-            "invalid-field"
-          );
-      }
 
       if (missing.length) {
         showMessage(
