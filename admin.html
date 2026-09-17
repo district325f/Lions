@@ -531,30 +531,6 @@
 
 
       <!-- ===============================================
-           QUICK OFFICER TYPE
-           =============================================== -->
-
-      <div class="card quick-defaults">
-        <h2>⚡ Officer Type</h2>
-
-        <div>
-          <label for="defaultCategory">
-            Default Category / Officer Type
-          </label>
-
-          <select id="defaultCategory">
-            <option value="">Loading Officer Types...</option>
-          </select>
-        </div>
-
-        <div class="hint">
-          यहाँ officer type एकपटक select गर्नुहोस्।
-          Member search भएपछि Category automatic यही हुन्छ।
-        </div>
-      </div>
-
-
-      <!-- ===============================================
            SEARCH
            =============================================== -->
 
@@ -766,7 +742,7 @@
         <h2>2. Officer Assignment</h2>
 
         <p class="hint">
-          Member search भएपछि Officer Type automatic आउँछ।
+          Officer Type select गर्नुहोस्।
           Committee / Area र Position Sheet अनुसार select गर्न सकिन्छ।
           LY 2026/27 र current one-year term system ले automatic save गर्छ।
         </p>
@@ -780,11 +756,9 @@
               Officer Type
             </label>
 
-            <input
-              id="category"
-              type="text"
-              readonly
-            >
+            <select id="category">
+              <option value="">Loading Officer Types...</option>
+            </select>
           </div>
 
 
@@ -997,7 +971,7 @@
         })
       );
 
-      const select = $("defaultCategory");
+      const select = $("category");
       select.innerHTML = "";
 
       types.forEach(function(type) {
@@ -1011,13 +985,12 @@
         select.value = types[0];
       }
 
-      applyQuickDefaults();
       refreshAssignmentOptions();
     }
 
 
     function refreshAssignmentOptions() {
-      const type = $("category").value || $("defaultCategory").value;
+      const type = $("category").value;
       const matching = officerTypeRows.filter(function(row) {
         return row.OfficerType === type;
       });
@@ -1263,22 +1236,12 @@
           selectedMember
         );
 
-        if (!editingOfficerId) {
-          applyQuickDefaults();
-        }
-
         showMessage(
           "searchMessage",
           "Member found. उपलब्ध data automatic fill भयो।",
           "success"
         );
 
-        setTimeout(
-          function() {
-            $("position").focus();
-          },
-          100
-        );
 
       } catch (error) {
         selectedMember = null;
@@ -1448,20 +1411,6 @@
         "auto-filled",
         Boolean(value)
       );
-    }
-
-
-    /* ===================================================
-       8. QUICK DEFAULTS
-       =================================================== */
-
-    function applyQuickDefaults() {
-      $("category").value =
-        $("defaultCategory").value;
-
-      $("committeeArea").value = "";
-      $("position").value = "";
-      refreshAssignmentOptions();
     }
 
 
@@ -2151,10 +2100,6 @@
         $("profileProfession").value =
           officer.Profession || "";
 
-        $("defaultCategory").value =
-          officer.Category ||
-          "Other";
-
         $("category").value =
           officer.Category ||
           "Other";
@@ -2358,12 +2303,10 @@
         }
       );
 
-    $("defaultCategory")
+    $("category")
       .addEventListener(
         "change",
         function() {
-          $("category").value =
-            this.value;
           $("committeeArea").value = "";
           $("position").value = "";
           refreshAssignmentOptions();
