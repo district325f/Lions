@@ -467,7 +467,28 @@
     [data-photo-action="remove"] {
       display: none !important;
     }
-</style>
+
+    /* =========================================================
+       VERIFIED MEMBER PHOTO — READ ONLY
+       Officer Admin must never Change / Remove / Delete / Replace
+       the original verified member photo.
+       ========================================================= */
+    #addPhotoButton,
+    #changePhotoButton,
+    #removePhotoButton,
+    #deletePhotoButton,
+    #replacePhotoButton,
+    [data-photo-action="add"],
+    [data-photo-action="change"],
+    [data-photo-action="remove"],
+    [data-photo-action="delete"],
+    [data-photo-action="replace"],
+    .photo-actions,
+    .photo-upload-actions {
+      display: none !important;
+    }
+
+  </style>
 </head>
 
 <body>
@@ -2796,6 +2817,77 @@
       },
       true
     );
+  </script>
+
+
+  <script>
+    (function protectVerifiedMemberPhoto() {
+      const blockedLabels = [
+        "add photo",
+        "change photo",
+        "remove photo",
+        "delete photo",
+        "replace photo"
+      ];
+
+      function removePhotoMutationControls(root) {
+        const scope = root || document;
+
+        scope
+          .querySelectorAll("button, a, label")
+          .forEach(function(element) {
+            const label =
+              String(element.textContent || "")
+                .trim()
+                .toLowerCase();
+
+            if (blockedLabels.includes(label)) {
+              element.remove();
+            }
+          });
+
+        scope
+          .querySelectorAll('input[type="file"]')
+          .forEach(function(input) {
+            const context =
+              (
+                String(input.id || "") +
+                " " +
+                String(input.name || "") +
+                " " +
+                String(input.className || "")
+              ).toLowerCase();
+
+            if (
+              context.includes("photo") ||
+              context.includes("image")
+            ) {
+              input.disabled = true;
+              input.remove();
+            }
+          });
+      }
+
+      document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+          removePhotoMutationControls(document);
+
+          const observer =
+            new MutationObserver(function() {
+              removePhotoMutationControls(document);
+            });
+
+          observer.observe(
+            document.body,
+            {
+              childList: true,
+              subtree: true
+            }
+          );
+        }
+      );
+    })();
   </script>
 
 </body>
