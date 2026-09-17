@@ -293,6 +293,35 @@
       overflow-wrap: anywhere;
     }
 
+    .membership-line {
+      color: #344054;
+      font-weight: 600;
+    }
+
+    .club-line {
+      margin:
+        7px 0 5px;
+
+      color: #0d47a1;
+      font-weight: bold;
+    }
+
+    .phone-link {
+      color: #0d47a1;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .phone-link:hover {
+      text-decoration: underline;
+    }
+
+    .blood-line {
+      margin-top: 6px;
+      color: #9b1c1c;
+      font-weight: bold;
+    }
+
     .empty {
       grid-column: 1 / -1;
 
@@ -738,6 +767,25 @@
       );
 
 
+      /*
+       * Required display sequence:
+       * 1. Name
+       * 2. Membership Number
+       * 3. Address
+       * 4. Club
+       * 5. Mobile
+       * 6. Email
+       * 7. Profession / Business
+       * 8. Blood Group (last)
+       */
+
+      addDetail(
+        details,
+        "🪪 Membership No.",
+        officer.MembershipNumber,
+        "membership-line"
+      );
+
       addDetail(
         details,
         "📍",
@@ -746,7 +794,13 @@
 
       addDetail(
         details,
-        "📞",
+        "🏛️",
+        officer.ClubName,
+        "club-line"
+      );
+
+      addPhoneDetail(
+        details,
         officer.Mobile
       );
 
@@ -758,26 +812,15 @@
 
       addDetail(
         details,
-        "🏛️",
-        officer.ClubName
-      );
-
-      addDetail(
-        details,
-        "🪪 Member No.",
-        officer.MembershipNumber
+        "💼",
+        officer.Profession
       );
 
       addDetail(
         details,
         "🩸 Blood Group",
-        officer.BloodGroup
-      );
-
-      addDetail(
-        details,
-        "💼",
-        officer.Profession
+        officer.BloodGroup,
+        "blood-line"
       );
 
 
@@ -804,7 +847,8 @@
     function addDetail(
       parent,
       label,
-      value
+      value,
+      extraClass
     ) {
       if (!value) {
         return;
@@ -816,7 +860,12 @@
         );
 
       line.className =
-        "detail-line";
+        "detail-line" +
+        (
+          extraClass
+            ? " " + extraClass
+            : ""
+        );
 
       line.textContent =
         label +
@@ -826,6 +875,53 @@
       parent.appendChild(
         line
       );
+    }
+
+
+    function addPhoneDetail(
+      parent,
+      mobile
+    ) {
+      if (!mobile) {
+        return;
+      }
+
+      const line =
+        document.createElement(
+          "div"
+        );
+
+      line.className =
+        "detail-line";
+
+      const icon =
+        document.createTextNode(
+          "📞 "
+        );
+
+      const link =
+        document.createElement(
+          "a"
+        );
+
+      link.className =
+        "phone-link";
+
+      link.href =
+        "tel:" +
+        String(mobile)
+          .replace(
+            /[^0-9+]/g,
+            ""
+          );
+
+      link.textContent =
+        mobile;
+
+      line.appendChild(icon);
+      line.appendChild(link);
+
+      parent.appendChild(line);
     }
   </script>
 </body>
