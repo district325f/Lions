@@ -745,13 +745,24 @@
 
       addDetail(
         details,
+        "🪪 Member No.",
+        officer.MembershipNumber
+      );
+
+      addDetail(
+        details,
         "📍",
         officer.Address
       );
 
       addDetail(
         details,
-        "📞",
+        "🏛️",
+        officer.ClubName
+      );
+
+      addPhoneDetail(
+        details,
         officer.Mobile
       );
 
@@ -763,26 +774,14 @@
 
       addDetail(
         details,
-        "🏛️",
-        officer.ClubName
-      );
-
-      addDetail(
-        details,
-        "🪪 Member No.",
-        officer.MembershipNumber
+        "💼",
+        officer.Profession
       );
 
       addDetail(
         details,
         "🩸 Blood Group",
         officer.BloodGroup
-      );
-
-      addDetail(
-        details,
-        "💼",
-        officer.Profession
       );
 
 
@@ -803,6 +802,25 @@
       );
 
       return card;
+    }
+
+
+    function addPhoneDetail(parent, value) {
+      if (!value) {
+        return;
+      }
+
+      const line = document.createElement("div");
+      line.className = "detail-line";
+
+      const link = document.createElement("a");
+      link.href = "tel:" + String(value).replace(/[^+\d]/g, "");
+      link.textContent = "📞 " + value;
+      link.style.color = "inherit";
+      link.style.textDecoration = "none";
+
+      line.appendChild(link);
+      parent.appendChild(line);
     }
 
 
