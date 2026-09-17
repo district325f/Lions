@@ -307,6 +307,48 @@
     }
 
 
+
+
+    /* =====================================================
+       UNIVERSAL OFFICER EDIT ACTIONS
+       ===================================================== */
+
+    .officer-action-row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .officer-action-row button {
+      width: auto;
+      min-width: 150px;
+      padding: 11px 20px;
+    }
+
+    .officer-action-row .secondary {
+      background: #ffffff;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+    }
+
+    .officer-action-row .secondary:hover {
+      background: #f8fafc;
+    }
+
+    @media (max-width: 560px) {
+      .officer-action-row {
+        justify-content: stretch;
+      }
+
+      .officer-action-row button {
+        flex: 1 1 140px;
+        min-width: 0;
+      }
+    }
+
+
     /* =====================================================
        6. UNIVERSAL SPINNER
        ===================================================== */
@@ -967,7 +1009,7 @@
       if (!result.ok) {
         throw new Error(
           result.message ||
-          "Officer Type list load हुन सकेन।"
+          "Officer Type list load हुन सकेन ।"
         );
       }
 
@@ -1080,7 +1122,9 @@
                 ),
 
               signal:
-                controller.signal
+                controller.signal,
+
+              cache: "no-store"
             }
           );
 
@@ -1099,7 +1143,7 @@
           "AbortError"
         ) {
           throw new Error(
-            "Server response ढिलो भयो।"
+            "Server response ढिलो भयो ।"
           );
         }
 
@@ -2403,19 +2447,31 @@
         "Admin data load हुँदैछ..."
       );
 
-      loadOfficers()
-        .catch(
-          function(error) {
-            $("officerList")
-              .textContent =
-                error.message;
+      Promise.allSettled([
+        loadOfficerTypes(),
+        loadOfficers()
+      ])
+        .then(function(results) {
+          if (results[0].status === "rejected") {
+            const select = $("category");
+            select.innerHTML =
+              '<option value="">Officer Type load भएन — फेरि प्रयास गर्नुहोस्</option>';
+
+            showMessage(
+              "saveMessage",
+              results[0].reason.message || "Officer Type load हुन सकेन ।",
+              "error"
+            );
           }
-        )
-        .finally(
-          function() {
-            hideProcessing();
+
+          if (results[1].status === "rejected") {
+            $("officerList").textContent =
+              results[1].reason.message;
           }
-        );
+        })
+        .finally(function() {
+          hideProcessing();
+        });
     }
   </script>
 </body>
