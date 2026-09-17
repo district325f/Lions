@@ -31,17 +31,20 @@
     }
 
     .wrap {
-      max-width: 1000px;
+      max-width: 1050px;
       margin: auto;
       padding: 20px;
     }
 
     .card {
+      margin-bottom: 18px;
+      padding: 22px;
+
       background: white;
       border-radius: 22px;
-      padding: 22px;
-      margin-bottom: 18px;
-      box-shadow: 0 10px 28px #0001;
+
+      box-shadow:
+        0 10px 28px #0001;
     }
 
     h1,
@@ -63,7 +66,7 @@
       margin: 60px auto;
     }
 
-    .row {
+    .grid {
       display: grid;
       grid-template-columns:
         repeat(2, 1fr);
@@ -77,6 +80,7 @@
     label {
       display: block;
       margin-bottom: 6px;
+
       font-size: 13px;
       font-weight: bold;
     }
@@ -86,27 +90,38 @@
     button {
       width: 100%;
       padding: 12px;
+
       border-radius: 12px;
       font-size: 15px;
     }
 
     input,
     select {
-      border: 1px solid #d8e1eb;
+      border:
+        1px solid #d8e1eb;
+
       background: white;
+    }
+
+    input.auto-filled {
+      background: #f1f8ff;
+      border-color: #9fc5ee;
     }
 
     button {
       border: 0;
       background: #0d47a1;
       color: white;
+
       font-weight: bold;
       cursor: pointer;
+
       transition: 0.2s;
     }
 
     button:hover {
-      transform: translateY(-1px);
+      transform:
+        translateY(-1px);
     }
 
     button:disabled {
@@ -138,34 +153,65 @@
       min-width: 105px;
     }
 
+    .hint {
+      margin-top: 6px;
+      color: #667085;
+      font-size: 12px;
+    }
+
 
     /* =====================================================
        3. MEMBER PREVIEW
        ===================================================== */
 
-    .preview {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      margin: 15px 0;
-      padding: 15px;
+    .member-summary {
+      display: grid;
+      grid-template-columns:
+        135px 1fr;
+      gap: 18px;
+
+      margin-top: 15px;
+      padding: 16px;
+
       background: #f8fbff;
-      border-radius: 16px;
+      border-radius: 18px;
     }
 
-    .preview img {
-      width: 110px;
-      height: 130px;
+    .member-photo {
+      width: 135px;
+      height: 160px;
+
       object-fit: cover;
-      border-radius: 14px;
+
+      border-radius: 15px;
       background: #e9eef5;
+    }
+
+    .member-photo-placeholder {
+      width: 135px;
+      height: 160px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 15px;
+      background: #e9eef5;
+      color: #667085;
+
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .profile-fields {
+      margin-top: 18px;
     }
 
     .message {
       margin-top: 12px;
       padding: 11px 13px;
+
       border-radius: 11px;
-      background: #eef6ff;
       line-height: 1.5;
     }
 
@@ -181,7 +227,23 @@
 
 
     /* =====================================================
-       4. OFFICER LIST
+       4. QUICK DEFAULTS
+       ===================================================== */
+
+    .quick-defaults {
+      border:
+        1px solid #dbeafe;
+
+      background: #f8fbff;
+    }
+
+    .quick-defaults h2 {
+      margin-top: 0;
+    }
+
+
+    /* =====================================================
+       5. OFFICER LIST
        ===================================================== */
 
     .list-item {
@@ -193,13 +255,15 @@
       margin: 10px 0;
       padding: 14px;
 
-      border: 1px solid #e6ebf0;
+      border:
+        1px solid #e6ebf0;
+
       border-radius: 16px;
     }
 
 
     /* =====================================================
-       5. UNIVERSAL PROCESSING OVERLAY / SPINNER
+       6. UNIVERSAL SPINNER
        ===================================================== */
 
     .processing-overlay {
@@ -212,8 +276,12 @@
       justify-content: center;
 
       padding: 20px;
-      background: rgba(8, 28, 58, 0.52);
-      backdrop-filter: blur(4px);
+
+      background:
+        rgba(8, 28, 58, 0.52);
+
+      backdrop-filter:
+        blur(4px);
     }
 
     .processing-overlay.show {
@@ -221,7 +289,9 @@
     }
 
     .processing-box {
-      width: min(320px, 92vw);
+      width:
+        min(320px, 92vw);
+
       padding: 24px;
 
       background: white;
@@ -229,17 +299,23 @@
       text-align: center;
 
       box-shadow:
-        0 18px 50px rgba(0, 0, 0, 0.25);
+        0 18px 50px
+        rgba(0, 0, 0, 0.25);
     }
 
     .spinner {
       width: 48px;
       height: 48px;
 
-      margin: 0 auto 15px;
+      margin:
+        0 auto 15px;
 
-      border: 5px solid #dbeafe;
-      border-top-color: #0d47a1;
+      border:
+        5px solid #dbeafe;
+
+      border-top-color:
+        #0d47a1;
+
       border-radius: 50%;
 
       animation:
@@ -253,17 +329,18 @@
 
     @keyframes spin {
       to {
-        transform: rotate(360deg);
+        transform:
+          rotate(360deg);
       }
     }
 
 
     /* =====================================================
-       6. MOBILE
+       7. MOBILE
        ===================================================== */
 
-    @media (max-width: 650px) {
-      .row {
+    @media (max-width: 700px) {
+      .grid {
         grid-template-columns: 1fr;
       }
 
@@ -279,8 +356,13 @@
         flex: 1 1 100%;
       }
 
-      .preview {
-        align-items: flex-start;
+      .member-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .member-photo,
+      .member-photo-placeholder {
+        margin: auto;
       }
 
       .list-item {
@@ -294,7 +376,7 @@
 <body>
 
   <!-- ===================================================
-       UNIVERSAL PROCESSING OVERLAY
+       PROCESSING OVERLAY
        =================================================== -->
 
   <div
@@ -372,6 +454,7 @@
 
       <div class="card">
         <div class="toolbar">
+
           <button
             id="homeButton"
             class="muted"
@@ -387,6 +470,7 @@
           >
             Logout
           </button>
+
         </div>
 
         <h1>
@@ -394,24 +478,114 @@
         </h1>
 
         <p>
-          Membership Number बाट member खोजेर
-          officer assign गर्नुहोस्।
+          Membership Number Search गर्नुहोस्।
+          उपलब्ध data automatic आउँछ।
+          Missing data यहीँ manually थप्न सकिन्छ।
         </p>
       </div>
 
 
       <!-- ===============================================
-           MEMBER SEARCH
+           QUICK DEFAULTS
+           =============================================== -->
+
+      <div class="card quick-defaults">
+        <h2>⚡ Quick Entry Defaults</h2>
+
+        <div class="grid">
+
+          <div>
+            <label for="defaultLY">
+              LY
+            </label>
+
+            <input
+              id="defaultLY"
+              type="text"
+              value="2026/27"
+            >
+          </div>
+
+
+          <div>
+            <label for="defaultCategory">
+              Default Category
+            </label>
+
+            <select id="defaultCategory">
+              <option value="District Executive Officers">
+                District Executive Officers
+              </option>
+
+              <option value="Cabinet Officers">
+                Cabinet Officers
+              </option>
+
+              <option value="Region Chairpersons">
+                Region Chairpersons
+              </option>
+
+              <option value="Zone Chairpersons">
+                Zone Chairpersons
+              </option>
+
+              <option value="District Chairpersons">
+                District Chairpersons
+              </option>
+
+              <option value="Other">
+                Other
+              </option>
+            </select>
+          </div>
+
+
+          <div>
+            <label for="defaultStartDate">
+              Start Date
+            </label>
+
+            <input
+              id="defaultStartDate"
+              type="date"
+              value="2026-07-01"
+            >
+          </div>
+
+
+          <div>
+            <label for="defaultEndDate">
+              End Date
+            </label>
+
+            <input
+              id="defaultEndDate"
+              type="date"
+              value="2027-06-30"
+            >
+          </div>
+
+        </div>
+
+        <div class="hint">
+          यी defaults प्रत्येक नयाँ officer search पछि automatic प्रयोग हुन्छन्।
+        </div>
+      </div>
+
+
+      <!-- ===============================================
+           SEARCH
            =============================================== -->
 
       <div class="card">
         <h2>1. Search Member</h2>
 
         <div class="toolbar">
+
           <input
             id="membershipNumber"
             type="text"
-            placeholder="Membership Number"
+            placeholder="Membership Number / Member ID"
           >
 
           <button
@@ -420,51 +594,186 @@
           >
             Search
           </button>
+
         </div>
 
         <div id="searchMessage"></div>
 
 
+        <!-- =============================================
+             MEMBER + PHOTO
+             ============================================= -->
+
         <div
-          id="memberPreview"
-          class="preview hidden"
+          id="memberSummary"
+          class="member-summary hidden"
         >
-          <img
-            id="memberPhoto"
-            src=""
-            alt="Member Photo"
-          >
+          <div>
+
+            <img
+              id="memberPhoto"
+              class="member-photo hidden"
+              src=""
+              alt="Member Photo"
+            >
+
+            <div
+              id="photoPlaceholder"
+              class="member-photo-placeholder"
+            >
+              Photo not found
+            </div>
+
+          </div>
 
           <div>
-            <h3 id="memberName"></h3>
+            <h2
+              id="summaryName"
+              style="margin-top:0;"
+            >
+            </h2>
 
-            <div id="memberDetails"></div>
+            <div id="summaryInfo"></div>
           </div>
         </div>
 
 
-        <div class="toolbar">
-          <input
-            id="photoFile"
-            type="file"
-            accept="image/*"
-          >
+        <!-- =============================================
+             EDITABLE PROFILE
+             ============================================= -->
 
-          <button
-            id="uploadPhotoButton"
-            class="gold"
-            type="button"
-          >
-            Upload / Change Photo
-          </button>
+        <div
+          id="profileFields"
+          class="profile-fields hidden"
+        >
+          <h2>
+            Member / Officer Profile
+          </h2>
 
-          <button
-            id="removePhotoButton"
-            class="danger"
-            type="button"
-          >
-            Remove Photo
-          </button>
+          <div class="hint">
+            Blue fields Members database बाट आएका हुन्।
+            आवश्यक भए यहीँ edit गर्न सकिन्छ।
+            Missing field manually भर्नुहोस्।
+          </div>
+
+          <br>
+
+          <div class="grid">
+
+            <div>
+              <label for="profileName">
+                Name *
+              </label>
+
+              <input
+                id="profileName"
+                type="text"
+              >
+            </div>
+
+
+            <div>
+              <label for="profileMobile">
+                Mobile / Contact
+              </label>
+
+              <input
+                id="profileMobile"
+                type="text"
+              >
+            </div>
+
+
+            <div>
+              <label for="profileEmail">
+                Email
+              </label>
+
+              <input
+                id="profileEmail"
+                type="email"
+              >
+            </div>
+
+
+            <div>
+              <label for="profileClubName">
+                Club Name
+              </label>
+
+              <input
+                id="profileClubName"
+                type="text"
+              >
+            </div>
+
+
+            <div class="full">
+              <label for="profileAddress">
+                Address
+              </label>
+
+              <input
+                id="profileAddress"
+                type="text"
+              >
+            </div>
+
+
+            <div>
+              <label for="profileBloodGroup">
+                Blood Group
+              </label>
+
+              <input
+                id="profileBloodGroup"
+                type="text"
+                placeholder="e.g. A+ve"
+              >
+            </div>
+
+
+            <div>
+              <label for="profileProfession">
+                Profession / Business
+              </label>
+
+              <input
+                id="profileProfession"
+                type="text"
+              >
+            </div>
+
+          </div>
+
+
+          <br>
+
+          <div class="toolbar">
+
+            <input
+              id="photoFile"
+              type="file"
+              accept="image/*"
+            >
+
+            <button
+              id="uploadPhotoButton"
+              class="gold"
+              type="button"
+            >
+              Upload / Change Photo
+            </button>
+
+            <button
+              id="removePhotoButton"
+              class="danger"
+              type="button"
+            >
+              Remove Photo
+            </button>
+
+          </div>
         </div>
       </div>
 
@@ -476,31 +785,70 @@
       <div class="card">
         <h2>2. Assign / Edit Officer</h2>
 
-        <div class="row">
+        <div class="grid">
 
           <div>
             <label for="category">
               Category
             </label>
 
-            <input
-              id="category"
-              type="text"
-              placeholder="District Executive Officers"
-            >
+            <select id="category">
+              <option value="District Executive Officers">
+                District Executive Officers
+              </option>
+
+              <option value="Cabinet Officers">
+                Cabinet Officers
+              </option>
+
+              <option value="Region Chairpersons">
+                Region Chairpersons
+              </option>
+
+              <option value="Zone Chairpersons">
+                Zone Chairpersons
+              </option>
+
+              <option value="District Chairpersons">
+                District Chairpersons
+              </option>
+
+              <option value="Other">
+                Other
+              </option>
+            </select>
           </div>
 
 
           <div>
             <label for="position">
-              Position
+              Position *
             </label>
 
             <input
               id="position"
               type="text"
-              placeholder="District Governor"
+              list="positionOptions"
+              placeholder="Type or select position"
             >
+
+            <datalist id="positionOptions">
+              <option value="District Governor">
+              <option value="Immediate Past District Governor">
+              <option value="First Vice District Governor">
+              <option value="Second Vice District Governor">
+              <option value="Cabinet Secretary">
+              <option value="Cabinet Treasurer">
+              <option value="Cabinet Secretary Treasurer">
+              <option value="Region Chairperson">
+              <option value="Zone Chairperson">
+              <option value="District Chairperson">
+              <option value="District Coordinator">
+            </datalist>
+
+            <div class="hint">
+              List मा नभएको position manually type गर्न मिल्छ।
+            </div>
           </div>
 
 
@@ -512,7 +860,6 @@
             <input
               id="ly"
               type="text"
-              placeholder="2026/27"
             >
           </div>
 
@@ -525,8 +872,8 @@
             <input
               id="displayOrder"
               type="number"
-              value="1"
               min="1"
+              value="1"
             >
           </div>
 
@@ -577,7 +924,7 @@
               id="saveOfficerButton"
               type="button"
             >
-              Assign / Save Officer
+              Save Officer
             </button>
           </div>
 
@@ -613,7 +960,8 @@
       "AKfycbz1hmQLbm4wa5qheEu2ErIt-ni0r24IenrMHZGaYZu8YtMCmtDHMR0-s6NuFZEifRl8QQ" +
       "/exec";
 
-    const REQUEST_TIMEOUT = 30000;
+    const REQUEST_TIMEOUT =
+      30000;
 
     let adminToken =
       localStorage.getItem(
@@ -622,126 +970,67 @@
 
     let selectedMember = null;
     let editingOfficerId = "";
+    let nextDisplayOrder = 1;
 
 
     /* ===================================================
-       2. DOM REFERENCES
+       2. DOM
        =================================================== */
 
-    const loginBox =
-      document.getElementById(
-        "loginBox"
-      );
-
-    const adminPanel =
-      document.getElementById(
-        "adminPanel"
-      );
-
-    const usernameInput =
-      document.getElementById(
-        "username"
-      );
-
-    const passwordInput =
-      document.getElementById(
-        "password"
-      );
-
-    const membershipInput =
-      document.getElementById(
-        "membershipNumber"
-      );
-
-    const memberPreview =
-      document.getElementById(
-        "memberPreview"
-      );
-
-    const memberPhoto =
-      document.getElementById(
-        "memberPhoto"
-      );
-
-    const memberName =
-      document.getElementById(
-        "memberName"
-      );
-
-    const memberDetails =
-      document.getElementById(
-        "memberDetails"
-      );
-
-    const photoFile =
-      document.getElementById(
-        "photoFile"
-      );
-
-    const officerList =
-      document.getElementById(
-        "officerList"
-      );
-
-    const processingOverlay =
-      document.getElementById(
-        "processingOverlay"
-      );
-
-    const processingText =
-      document.getElementById(
-        "processingText"
-      );
+    const $ =
+      function(id) {
+        return document.getElementById(id);
+      };
 
 
     /* ===================================================
-       3. UNIVERSAL PROCESSING / SPINNER
+       3. PROCESSING
        =================================================== */
 
     function showProcessing(message) {
-      processingText.textContent =
+      $("processingText").textContent =
         message || "Processing...";
 
-      processingOverlay.classList.add(
-        "show"
-      );
+      $("processingOverlay")
+        .classList.add("show");
 
       document
         .querySelectorAll("button")
-        .forEach(function(button) {
-          button.disabled = true;
-        });
+        .forEach(
+          function(button) {
+            button.disabled = true;
+          }
+        );
     }
 
 
     function hideProcessing() {
-      processingOverlay.classList.remove(
-        "show"
-      );
+      $("processingOverlay")
+        .classList.remove("show");
 
       document
         .querySelectorAll("button")
-        .forEach(function(button) {
-          button.disabled = false;
-        });
+        .forEach(
+          function(button) {
+            button.disabled = false;
+          }
+        );
     }
 
 
     /* ===================================================
-       4. MESSAGE HELPER
+       4. MESSAGE
        =================================================== */
 
     function showMessage(
-      elementId,
+      targetId,
       message,
       type
     ) {
-      const element =
-        document.getElementById(
-          elementId
-        );
+      const target =
+        $(targetId);
 
-      element.innerHTML = "";
+      target.innerHTML = "";
 
       if (!message) {
         return;
@@ -751,16 +1040,18 @@
         document.createElement("div");
 
       box.className =
-        "message " + (type || "");
+        "message " +
+        (type || "");
 
-      box.textContent = message;
+      box.textContent =
+        message;
 
-      element.appendChild(box);
+      target.appendChild(box);
     }
 
 
     /* ===================================================
-       5. API HELPER WITH TIMEOUT
+       5. API
        =================================================== */
 
     async function apiRequest(
@@ -778,35 +1069,34 @@
           REQUEST_TIMEOUT
         );
 
-      const requestData =
-        Object.assign(
-          {},
-          payload || {},
-          {
-            action: action,
-            token: adminToken
-          }
-        );
-
       try {
-        const response = await fetch(
-          API_URL,
-          {
-            method: "POST",
+        const response =
+          await fetch(
+            API_URL,
+            {
+              method: "POST",
 
-            headers: {
-              "Content-Type":
-                "text/plain;charset=utf-8"
-            },
+              headers: {
+                "Content-Type":
+                  "text/plain;charset=utf-8"
+              },
 
-            body: JSON.stringify(
-              requestData
-            ),
+              body:
+                JSON.stringify(
+                  Object.assign(
+                    {},
+                    payload || {},
+                    {
+                      action: action,
+                      token: adminToken
+                    }
+                  )
+                ),
 
-            signal:
-              controller.signal
-          }
-        );
+              signal:
+                controller.signal
+            }
+          );
 
         if (!response.ok) {
           throw new Error(
@@ -819,11 +1109,11 @@
 
       } catch (error) {
         if (
-          error.name === "AbortError"
+          error.name ===
+          "AbortError"
         ) {
           throw new Error(
-            "Server response ढिलो भयो। " +
-            "Apps Script deployment check गर्नुहोस्।"
+            "Server response ढिलो भयो।"
           );
         }
 
@@ -841,10 +1131,10 @@
 
     async function login() {
       const username =
-        usernameInput.value.trim();
+        $("username").value.trim();
 
       const password =
-        passwordInput.value;
+        $("password").value;
 
       if (!username || !password) {
         showMessage(
@@ -877,7 +1167,8 @@
           );
         }
 
-        adminToken = result.token;
+        adminToken =
+          result.token;
 
         localStorage.setItem(
           "hubAdminToken",
@@ -891,8 +1182,7 @@
       } catch (error) {
         showMessage(
           "loginMessage",
-          error.message ||
-          "Login हुन सकेन।",
+          error.message,
           "error"
         );
 
@@ -903,13 +1193,11 @@
 
 
     function showAdminPanel() {
-      loginBox.classList.add(
-        "hidden"
-      );
+      $("loginBox")
+        .classList.add("hidden");
 
-      adminPanel.classList.remove(
-        "hidden"
-      );
+      $("adminPanel")
+        .classList.remove("hidden");
     }
 
 
@@ -917,10 +1205,6 @@
       localStorage.removeItem(
         "hubAdminToken"
       );
-
-      adminToken = "";
-      selectedMember = null;
-      editingOfficerId = "";
 
       location.reload();
     }
@@ -932,7 +1216,9 @@
 
     async function searchMember() {
       const membershipNumber =
-        membershipInput.value.trim();
+        $("membershipNumber")
+          .value
+          .trim();
 
       if (!membershipNumber) {
         showMessage(
@@ -960,8 +1246,7 @@
 
         if (!result.ok) {
           throw new Error(
-            result.message ||
-            "Member भेटिएन।"
+            result.message
           );
         }
 
@@ -972,23 +1257,36 @@
           selectedMember
         );
 
+        if (!editingOfficerId) {
+          applyQuickDefaults();
+        }
+
         showMessage(
           "searchMessage",
-          "Member found.",
+          "Member found. उपलब्ध data automatic fill भयो।",
           "success"
+        );
+
+        setTimeout(
+          function() {
+            $("position").focus();
+          },
+          100
         );
 
       } catch (error) {
         selectedMember = null;
 
-        memberPreview.classList.add(
-          "hidden"
-        );
+        $("memberSummary")
+          .classList.add("hidden");
+
+        $("profileFields")
+          .classList.add("hidden");
 
         showMessage(
           "searchMessage",
           error.message ||
-          "Member search हुन सकेन।",
+          "Member भेटिएन।",
           "error"
         );
 
@@ -999,12 +1297,10 @@
 
 
     function renderMember(member) {
-      memberName.textContent =
+      $("summaryName").textContent =
         member.Name || "";
 
-      memberDetails.innerHTML = "";
-
-      const lines = [
+      const summaryLines = [
         [
           "Membership No.",
           member.MembershipNumber
@@ -1022,70 +1318,159 @@
           member.Address
         ],
         [
-          "Profession / Business",
-          member.Profession
+          "Club",
+          member.ClubName
         ],
         [
           "Blood Group",
           member.BloodGroup
+        ],
+        [
+          "Profession / Business",
+          member.Profession
         ]
       ];
 
-      lines.forEach(function(item) {
-        if (!item[1]) {
-          return;
+      $("summaryInfo").innerHTML = "";
+
+      summaryLines.forEach(
+        function(item) {
+          if (!item[1]) {
+            return;
+          }
+
+          const line =
+            document.createElement(
+              "div"
+            );
+
+          line.textContent =
+            item[0] +
+            ": " +
+            item[1];
+
+          $("summaryInfo")
+            .appendChild(line);
         }
-
-        const line =
-          document.createElement("div");
-
-        line.textContent =
-          item[0] +
-          ": " +
-          item[1];
-
-        memberDetails.appendChild(
-          line
-        );
-      });
+      );
 
       if (member.PhotoURL) {
-        memberPhoto.src =
+        $("memberPhoto").src =
           member.PhotoURL;
 
-        memberPhoto.style.visibility =
-          "visible";
+        $("memberPhoto")
+          .classList.remove("hidden");
+
+        $("photoPlaceholder")
+          .classList.add("hidden");
 
       } else {
-        memberPhoto.removeAttribute(
-          "src"
-        );
+        $("memberPhoto")
+          .classList.add("hidden");
 
-        memberPhoto.style.visibility =
-          "hidden";
+        $("photoPlaceholder")
+          .classList.remove("hidden");
       }
 
-      memberPreview.classList.remove(
-        "hidden"
+      fillProfileField(
+        "profileName",
+        member.Name
+      );
+
+      fillProfileField(
+        "profileMobile",
+        member.Mobile
+      );
+
+      fillProfileField(
+        "profileEmail",
+        member.Email
+      );
+
+      fillProfileField(
+        "profileAddress",
+        member.Address
+      );
+
+      fillProfileField(
+        "profileClubName",
+        member.ClubName
+      );
+
+      fillProfileField(
+        "profileBloodGroup",
+        member.BloodGroup
+      );
+
+      fillProfileField(
+        "profileProfession",
+        member.Profession
+      );
+
+      $("memberSummary")
+        .classList.remove("hidden");
+
+      $("profileFields")
+        .classList.remove("hidden");
+    }
+
+
+    function fillProfileField(
+      id,
+      value
+    ) {
+      const input = $(id);
+
+      input.value =
+        value || "";
+
+      input.classList.toggle(
+        "auto-filled",
+        Boolean(value)
       );
     }
 
 
     /* ===================================================
-       8. PHOTO UPLOAD / REMOVE
+       8. QUICK DEFAULTS
+       =================================================== */
+
+    function applyQuickDefaults() {
+      $("category").value =
+        $("defaultCategory").value;
+
+      $("ly").value =
+        $("defaultLY").value;
+
+      $("startDate").value =
+        $("defaultStartDate").value;
+
+      $("endDate").value =
+        $("defaultEndDate").value;
+
+      $("activeStatus").value =
+        "Yes";
+
+      $("displayOrder").value =
+        nextDisplayOrder;
+    }
+
+
+    /* ===================================================
+       9. PHOTO
        =================================================== */
 
     async function uploadPhoto() {
       if (!selectedMember) {
         alert(
-          "पहिले Membership Number Search गर्नुहोस्।"
+          "पहिले member search गर्नुहोस्।"
         );
 
         return;
       }
 
       const file =
-        photoFile.files[0];
+        $("photoFile").files[0];
 
       if (!file) {
         alert(
@@ -1147,16 +1532,17 @@
 
         if (!result.ok) {
           throw new Error(
-            result.message ||
-            "Photo upload failed."
+            result.message
           );
         }
 
-        alert(result.message);
-
-        photoFile.value = "";
+        $("photoFile").value = "";
 
         await searchMember();
+
+        alert(
+          result.message
+        );
 
       } catch (error) {
         alert(
@@ -1173,18 +1559,17 @@
     async function removePhoto() {
       if (!selectedMember) {
         alert(
-          "पहिले Membership Number Search गर्नुहोस्।"
+          "पहिले member search गर्नुहोस्।"
         );
 
         return;
       }
 
-      const confirmed =
-        confirm(
+      if (
+        !confirm(
           "यो member को photo remove गर्ने?"
-        );
-
-      if (!confirmed) {
+        )
+      ) {
         return;
       }
 
@@ -1205,14 +1590,15 @@
 
         if (!result.ok) {
           throw new Error(
-            result.message ||
-            "Photo remove failed."
+            result.message
           );
         }
 
-        alert(result.message);
-
         await searchMember();
+
+        alert(
+          result.message
+        );
 
       } catch (error) {
         alert(
@@ -1234,13 +1620,10 @@
 
           reader.onload =
             function() {
-              const result =
-                String(
-                  reader.result || ""
-                );
-
               resolve(
-                result.split(",")[1]
+                String(
+                  reader.result
+                ).split(",")[1]
               );
             };
 
@@ -1260,29 +1643,39 @@
 
 
     /* ===================================================
-       9. SAVE OFFICER
+       10. SAVE OFFICER
        =================================================== */
 
     async function saveOfficer() {
       if (!selectedMember) {
         alert(
-          "पहिले Membership Number Search गर्नुहोस्।"
+          "पहिले member search गर्नुहोस्।"
         );
 
         return;
       }
 
       const position =
-        document
-          .getElementById(
-            "position"
-          )
+        $("position")
           .value
           .trim();
 
+      const name =
+        $("profileName")
+          .value
+          .trim();
+
+      if (!name) {
+        alert(
+          "Name अनिवार्य छ।"
+        );
+
+        return;
+      }
+
       if (!position) {
         alert(
-          "Position लेख्नुहोस्।"
+          "Position अनिवार्य छ।"
         );
 
         return;
@@ -1305,62 +1698,58 @@
                   .MembershipNumber,
 
               category:
-                document
-                  .getElementById(
-                    "category"
-                  )
-                  .value
-                  .trim(),
+                $("category").value,
 
               position:
                 position,
 
               ly:
-                document
-                  .getElementById(
-                    "ly"
-                  )
-                  .value
-                  .trim(),
+                $("ly").value.trim(),
 
               startDate:
-                document
-                  .getElementById(
-                    "startDate"
-                  )
-                  .value,
+                $("startDate").value,
 
               endDate:
-                document
-                  .getElementById(
-                    "endDate"
-                  )
-                  .value,
+                $("endDate").value,
 
               displayOrder:
-                document
-                  .getElementById(
-                    "displayOrder"
-                  )
-                  .value,
+                $("displayOrder").value,
 
               active:
-                document
-                  .getElementById(
-                    "activeStatus"
-                  )
-                  .value
+                $("activeStatus").value,
+
+              /*
+               * Save only officer-specific profile values.
+               * These do NOT edit the master Members sheet.
+               */
+              manualName:
+                $("profileName").value.trim(),
+
+              manualMobile:
+                $("profileMobile").value.trim(),
+
+              manualEmail:
+                $("profileEmail").value.trim(),
+
+              manualAddress:
+                $("profileAddress").value.trim(),
+
+              manualClubName:
+                $("profileClubName").value.trim(),
+
+              manualBloodGroup:
+                $("profileBloodGroup").value.trim(),
+
+              manualProfession:
+                $("profileProfession").value.trim()
             }
           );
 
         if (!result.ok) {
           throw new Error(
-            result.message ||
-            "Save failed."
+            result.message
           );
         }
-
-        editingOfficerId = "";
 
         showMessage(
           "saveMessage",
@@ -1368,7 +1757,11 @@
           "success"
         );
 
+        editingOfficerId = "";
+
         await loadOfficers();
+
+        resetForNextOfficer();
 
       } catch (error) {
         showMessage(
@@ -1384,41 +1777,67 @@
     }
 
 
+    function resetForNextOfficer() {
+      selectedMember = null;
+
+      $("membershipNumber").value = "";
+      $("position").value = "";
+
+      $("memberSummary")
+        .classList.add("hidden");
+
+      $("profileFields")
+        .classList.add("hidden");
+
+      $("membershipNumber").focus();
+    }
+
+
     /* ===================================================
-       10. OFFICER LIST
+       11. OFFICER LIST
        =================================================== */
 
     async function loadOfficers() {
-      try {
-        const result =
-          await apiRequest(
-            "adminListOfficers"
-          );
-
-        if (!result.ok) {
-          throw new Error(
-            result.message ||
-            "Officer list load failed."
-          );
-        }
-
-        renderOfficerList(
-          result.officers || []
+      const result =
+        await apiRequest(
+          "adminListOfficers"
         );
 
-      } catch (error) {
-        officerList.textContent =
-          error.message ||
-          "Officer list load हुन सकेन।";
+      if (!result.ok) {
+        throw new Error(
+          result.message ||
+          "Officer list load failed."
+        );
       }
+
+      const officers =
+        result.officers || [];
+
+      nextDisplayOrder =
+        officers.length
+          ? Math.max.apply(
+              null,
+              officers.map(
+                function(officer) {
+                  return Number(
+                    officer.DisplayOrder || 0
+                  );
+                }
+              )
+            ) + 1
+          : 1;
+
+      renderOfficerList(
+        officers
+      );
     }
 
 
     function renderOfficerList(officers) {
-      officerList.innerHTML = "";
+      $("officerList").innerHTML = "";
 
       if (!officers.length) {
-        officerList.textContent =
+        $("officerList").textContent =
           "अहिलेसम्म officer assign गरिएको छैन।";
 
         return;
@@ -1449,11 +1868,8 @@
             officer.Position || "";
 
           info.appendChild(title);
-
           info.appendChild(
-            document.createElement(
-              "br"
-            )
+            document.createElement("br")
           );
 
           info.appendChild(
@@ -1466,9 +1882,7 @@
           );
 
           info.appendChild(
-            document.createElement(
-              "br"
-            )
+            document.createElement("br")
           );
 
           const small =
@@ -1548,9 +1962,8 @@
           item.appendChild(info);
           item.appendChild(actions);
 
-          officerList.appendChild(
-            item
-          );
+          $("officerList")
+            .appendChild(item);
         }
       );
     }
@@ -1560,80 +1973,111 @@
       editingOfficerId =
         officer.OfficerID || "";
 
-      membershipInput.value =
+      $("membershipNumber").value =
         officer.MembershipNumber || "";
 
-      document
-        .getElementById(
-          "category"
-        )
-        .value =
-          officer.Category || "";
+      showProcessing(
+        "Officer data load हुँदैछ..."
+      );
 
-      document
-        .getElementById(
-          "position"
-        )
-        .value =
+      try {
+        const result =
+          await apiRequest(
+            "searchMember",
+            {
+              membershipNumber:
+                officer.MembershipNumber
+            }
+          );
+
+        if (!result.ok) {
+          throw new Error(
+            result.message
+          );
+        }
+
+        selectedMember =
+          result.member;
+
+        renderMember(
+          selectedMember
+        );
+
+        /*
+         * Officer saved/manual values take priority in edit mode.
+         */
+        $("profileName").value =
+          officer.Name || "";
+
+        $("profileMobile").value =
+          officer.Mobile || "";
+
+        $("profileEmail").value =
+          officer.Email || "";
+
+        $("profileAddress").value =
+          officer.Address || "";
+
+        $("profileClubName").value =
+          officer.ClubName || "";
+
+        $("profileBloodGroup").value =
+          officer.BloodGroup || "";
+
+        $("profileProfession").value =
+          officer.Profession || "";
+
+        $("category").value =
+          officer.Category ||
+          "Other";
+
+        $("position").value =
           officer.Position || "";
 
-      document
-        .getElementById(
-          "ly"
-        )
-        .value =
+        $("ly").value =
           officer.LY || "";
 
-      document
-        .getElementById(
-          "displayOrder"
-        )
-        .value =
+        $("displayOrder").value =
           officer.DisplayOrder || 1;
 
-      document
-        .getElementById(
-          "startDate"
-        )
-        .value =
+        $("startDate").value =
           normalizeDateForInput(
             officer.StartDate
           );
 
-      document
-        .getElementById(
-          "endDate"
-        )
-        .value =
+        $("endDate").value =
           normalizeDateForInput(
             officer.EndDate
           );
 
-      document
-        .getElementById(
-          "activeStatus"
-        )
-        .value =
+        $("activeStatus").value =
           officer.Active || "Yes";
 
-      await searchMember();
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
 
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+      } catch (error) {
+        alert(
+          error.message ||
+          "Officer edit load हुन सकेन।"
+        );
+
+      } finally {
+        hideProcessing();
+      }
     }
 
 
     async function deactivateOfficer(
       officerId
     ) {
-      const confirmed =
-        confirm(
+      if (
+        !confirm(
           "Officer लाई Inactive गर्ने?"
-        );
-
-      if (!confirmed) {
+        )
+      ) {
         return;
       }
 
@@ -1653,8 +2097,7 @@
 
         if (!result.ok) {
           throw new Error(
-            result.message ||
-            "Update failed."
+            result.message
           );
         }
 
@@ -1662,8 +2105,7 @@
 
       } catch (error) {
         alert(
-          error.message ||
-          "Update हुन सकेन।"
+          error.message
         );
 
       } finally {
@@ -1698,47 +2140,31 @@
         return "";
       }
 
-      const year =
-        date.getFullYear();
-
-      const month =
+      return (
+        date.getFullYear() +
+        "-" +
         String(
           date.getMonth() + 1
-        ).padStart(2, "0");
-
-      const day =
+        ).padStart(2, "0") +
+        "-" +
         String(
           date.getDate()
-        ).padStart(2, "0");
-
-      return (
-        year +
-        "-" +
-        month +
-        "-" +
-        day
+        ).padStart(2, "0")
       );
     }
 
 
     /* ===================================================
-       11. BUTTON EVENTS
-       No inline onclick dependency.
+       12. EVENTS
        =================================================== */
 
-    document
-      .getElementById(
-        "loginButton"
-      )
+    $("loginButton")
       .addEventListener(
         "click",
         login
       );
 
-    document
-      .getElementById(
-        "homeButton"
-      )
+    $("homeButton")
       .addEventListener(
         "click",
         function() {
@@ -1747,74 +2173,63 @@
         }
       );
 
-    document
-      .getElementById(
-        "logoutButton"
-      )
+    $("logoutButton")
       .addEventListener(
         "click",
         logout
       );
 
-    document
-      .getElementById(
-        "searchButton"
-      )
+    $("searchButton")
       .addEventListener(
         "click",
         searchMember
       );
 
-    document
-      .getElementById(
-        "uploadPhotoButton"
-      )
+    $("uploadPhotoButton")
       .addEventListener(
         "click",
         uploadPhoto
       );
 
-    document
-      .getElementById(
-        "removePhotoButton"
-      )
+    $("removePhotoButton")
       .addEventListener(
         "click",
         removePhoto
       );
 
-    document
-      .getElementById(
-        "saveOfficerButton"
-      )
+    $("saveOfficerButton")
       .addEventListener(
         "click",
         saveOfficer
       );
 
-
-    passwordInput.addEventListener(
-      "keydown",
-      function(event) {
-        if (event.key === "Enter") {
-          login();
+    $("password")
+      .addEventListener(
+        "keydown",
+        function(event) {
+          if (
+            event.key === "Enter"
+          ) {
+            login();
+          }
         }
-      }
-    );
+      );
 
-
-    membershipInput.addEventListener(
-      "keydown",
-      function(event) {
-        if (event.key === "Enter") {
-          searchMember();
+    $("membershipNumber")
+      .addEventListener(
+        "keydown",
+        function(event) {
+          if (
+            event.key === "Enter"
+          ) {
+            searchMember();
+          }
         }
-      }
-    );
+      );
 
 
     /* ===================================================
-       12. INITIAL SESSION
+       13. INITIAL SESSION
        =================================================== */
 
     if (adminToken) {
@@ -1825,9 +2240,18 @@
       );
 
       loadOfficers()
-        .finally(function() {
-          hideProcessing();
-        });
+        .catch(
+          function(error) {
+            $("officerList")
+              .textContent =
+                error.message;
+          }
+        )
+        .finally(
+          function() {
+            hideProcessing();
+          }
+        );
     }
   </script>
 </body>
