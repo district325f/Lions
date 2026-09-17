@@ -531,6 +531,30 @@
 
 
       <!-- ===============================================
+           QUICK OFFICER TYPE
+           =============================================== -->
+
+      <div class="card quick-defaults">
+        <h2>⚡ Officer Type</h2>
+
+        <div>
+          <label for="defaultCategory">
+            Default Category / Officer Type
+          </label>
+
+          <select id="defaultCategory">
+            <option value="">Loading Officer Types...</option>
+          </select>
+        </div>
+
+        <div class="hint">
+          यहाँ officer type एकपटक select गर्नुहोस्।
+          Member search भएपछि Category automatic यही हुन्छ।
+        </div>
+      </div>
+
+
+      <!-- ===============================================
            SEARCH
            =============================================== -->
 
@@ -742,7 +766,8 @@
         <h2>2. Officer Assignment</h2>
 
         <p class="hint">
-          Officer Type sheet बाट select गर्नुहोस् र Position select/type गर्नुहोस्।
+          Member search भएपछि Officer Type automatic आउँछ।
+          Committee / Area र Position Sheet अनुसार select गर्न सकिन्छ।
           LY 2026/27 र current one-year term system ले automatic save गर्छ।
         </p>
 
@@ -755,14 +780,30 @@
               Officer Type
             </label>
 
-            <select id="category">
-              <option value="">
-                Loading Officer Type...
-              </option>
-            </select>
+            <input
+              id="category"
+              type="text"
+              readonly
+            >
+          </div>
+
+
+          <div>
+            <label for="committeeArea">
+              Committee / Area
+            </label>
+
+            <input
+              id="committeeArea"
+              type="text"
+              list="committeeAreaOptions"
+              placeholder="Select or type Committee / Area"
+            >
+
+            <datalist id="committeeAreaOptions"></datalist>
 
             <div class="hint">
-              Data "Officer Type" sheet बाट आउँछ।
+              Officer Type अनुसार list automatic आउँछ।
             </div>
           </div>
 
@@ -779,19 +820,7 @@
               placeholder="Type or select position"
             >
 
-            <datalist id="positionOptions">
-              <option value="District Governor">
-              <option value="Immediate Past District Governor">
-              <option value="First Vice District Governor">
-              <option value="Second Vice District Governor">
-              <option value="Cabinet Secretary">
-              <option value="Cabinet Treasurer">
-              <option value="Cabinet Secretary Treasurer">
-              <option value="Region Chairperson">
-              <option value="Zone Chairperson">
-              <option value="District Chairperson">
-              <option value="District Coordinator">
-            </datalist>
+            <datalist id="positionOptions"></datalist>
 
             <div class="hint">
               List मा नभएको position manually type गर्न मिल्छ।
@@ -934,6 +963,102 @@
        5. API
        =================================================== */
 
+    let officerTypeRows = [];
+
+
+    function uniqueValues(values) {
+      return Array.from(
+        new Set(
+          values
+            .map(function(value) {
+              return String(value || "").trim();
+            })
+            .filter(Boolean)
+        )
+      );
+    }
+
+
+    async function loadOfficerTypes() {
+      const result = await apiRequest("getOfficerTypes");
+
+      if (!result.ok) {
+        throw new Error(
+          result.message ||
+          "Officer Type list load हुन सकेन।"
+        );
+      }
+
+      officerTypeRows = result.officerTypes || [];
+
+      const types = uniqueValues(
+        officerTypeRows.map(function(row) {
+          return row.OfficerType;
+        })
+      );
+
+      const select = $("defaultCategory");
+      select.innerHTML = "";
+
+      types.forEach(function(type) {
+        const option = document.createElement("option");
+        option.value = type;
+        option.textContent = type;
+        select.appendChild(option);
+      });
+
+      if (!select.value && types.length) {
+        select.value = types[0];
+      }
+
+      applyQuickDefaults();
+      refreshAssignmentOptions();
+    }
+
+
+    function refreshAssignmentOptions() {
+      const type = $("category").value || $("defaultCategory").value;
+      const matching = officerTypeRows.filter(function(row) {
+        return row.OfficerType === type;
+      });
+
+      const areas = uniqueValues(
+        matching.map(function(row) {
+          return row.CommitteeArea;
+        })
+      );
+
+      const areaList = $("committeeAreaOptions");
+      areaList.innerHTML = "";
+      areas.forEach(function(area) {
+        const option = document.createElement("option");
+        option.value = area;
+        areaList.appendChild(option);
+      });
+
+      const selectedArea = $("committeeArea").value.trim();
+      const positionRows = matching.filter(function(row) {
+        return !selectedArea ||
+          !row.CommitteeArea ||
+          row.CommitteeArea === selectedArea;
+      });
+
+      const positions = uniqueValues(
+        positionRows.map(function(row) {
+          return row.Position;
+        })
+      );
+
+      const positionList = $("positionOptions");
+      positionList.innerHTML = "";
+      positions.forEach(function(position) {
+        const option = document.createElement("option");
+        option.value = position;
+        positionList.appendChild(option);
+      });
+    }
+
+
     async function apiRequest(
       action,
       payload
@@ -1057,10 +1182,8 @@
 
         showAdminPanel();
 
-        await Promise.all([
-          loadOfficerTypes(),
-          loadOfficers()
-        ]);
+        await loadOfficerTypes();
+        await loadOfficers();
 
       } catch (error) {
         showMessage(
@@ -1090,62 +1213,6 @@
       );
 
       location.reload();
-    }
-
-
-    /* ===================================================
-       6A. OFFICER TYPE FROM SHEET
-       =================================================== */
-
-    async function loadOfficerTypes() {
-      const result =
-        await apiRequest(
-          "getOfficerTypes"
-        );
-
-      if (!result.ok) {
-        throw new Error(
-          result.message ||
-          "Officer Type load हुन सकेन।"
-        );
-      }
-
-      const select =
-        $("category");
-
-      const previousValue =
-        select.value;
-
-      select.innerHTML = "";
-
-      const types =
-        result.officerTypes || [];
-
-      types.forEach(
-        function(type) {
-          const option =
-            document.createElement(
-              "option"
-            );
-
-          option.value = type;
-          option.textContent = type;
-
-          select.appendChild(
-            option
-          );
-        }
-      );
-
-      if (
-        previousValue &&
-        types.indexOf(
-          previousValue
-        ) !== -1
-      ) {
-        select.value =
-          previousValue;
-      }
     }
 
 
@@ -1204,6 +1271,13 @@
           "searchMessage",
           "Member found. उपलब्ध data automatic fill भयो।",
           "success"
+        );
+
+        setTimeout(
+          function() {
+            $("position").focus();
+          },
+          100
         );
 
       } catch (error) {
@@ -1382,10 +1456,12 @@
        =================================================== */
 
     function applyQuickDefaults() {
-      /*
-       * Officer Type remains selected for fast consecutive entry.
-       * No duplicate top Category section is required.
-       */
+      $("category").value =
+        $("defaultCategory").value;
+
+      $("committeeArea").value = "";
+      $("position").value = "";
+      refreshAssignmentOptions();
     }
 
 
@@ -1720,6 +1796,11 @@
               category:
                 $("category").value,
 
+              committeeArea:
+                $("committeeArea")
+                  .value
+                  .trim(),
+
               position:
                 $("position")
                   .value
@@ -1823,6 +1904,7 @@
       selectedMember = null;
 
       $("membershipNumber").value = "";
+      $("committeeArea").value = "";
       $("position").value = "";
 
       $("memberSummary")
@@ -2069,9 +2151,18 @@
         $("profileProfession").value =
           officer.Profession || "";
 
+        $("defaultCategory").value =
+          officer.Category ||
+          "Other";
+
         $("category").value =
           officer.Category ||
-          "";
+          "Other";
+
+        $("committeeArea").value =
+          officer.CommitteeArea || "";
+
+        refreshAssignmentOptions();
 
         $("position").value =
           officer.Position || "";
@@ -2267,6 +2358,27 @@
         }
       );
 
+    $("defaultCategory")
+      .addEventListener(
+        "change",
+        function() {
+          $("category").value =
+            this.value;
+          $("committeeArea").value = "";
+          $("position").value = "";
+          refreshAssignmentOptions();
+        }
+      );
+
+    $("committeeArea")
+      .addEventListener(
+        "input",
+        function() {
+          refreshAssignmentOptions();
+        }
+      );
+
+
     [
       "profileName",
       "profileMobile",
@@ -2307,10 +2419,7 @@
         "Admin data load हुँदैछ..."
       );
 
-      Promise.all([
-        loadOfficerTypes(),
-        loadOfficers()
-      ])
+      loadOfficers()
         .catch(
           function(error) {
             $("officerList")
