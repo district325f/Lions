@@ -1167,6 +1167,27 @@
       .addEventListener("input", filterOfficers);
 
   </script>
+
+  <script>
+    // Display-only fallback for officers without a verified member photo.
+    // logo.png is never saved to Drive or to the officer/member database.
+    document.addEventListener(
+      "error",
+      function(event) {
+        const target = event.target;
+
+        if (
+          target &&
+          target.tagName === "IMG" &&
+          !target.dataset.defaultLogoApplied
+        ) {
+          target.dataset.defaultLogoApplied = "1";
+          target.src = "logo.png";
+        }
+      },
+      true
+    );
+  </script>
 </body>
 
 </html>
