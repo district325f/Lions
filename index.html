@@ -377,22 +377,22 @@ body{
 </div>
 
 <div class="bottom">
-  <a class="nav" href="#">
+  <a class="nav" href="index.html">
     <span>🏠</span>
     Home
   </a>
 
-  <a class="nav" href="#systemGrid">
+  <a class="nav" href="index.html#systemGrid">
     <span>📱</span>
     Systems
   </a>
 
-  <a class="nav" href="#">
+  <a class="nav" href="about.html">
     <span>ℹ️</span>
     About
   </a>
 
-  <a class="nav" href="#">
+  <a class="nav" href="admin.html">
     <span>⚙️</span>
     Admin
   </a>
@@ -412,9 +412,9 @@ function updateTodayClock(){
 
   document.getElementById("today").innerHTML =
     "आज: " +
-    today.toLocaleDateString("ne-NP") +
+    today.toLocaleDateString("en-US") +
     " • " +
-    today.toLocaleTimeString("ne-NP",{
+    today.toLocaleTimeString("en-US",{
       hour:'2-digit',
       minute:'2-digit'
     });
