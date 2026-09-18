@@ -387,12 +387,12 @@ body{
     Systems
   </a>
 
-  <a class="nav" href="about.html">
+  <a class="nav" href="#">
     <span>ℹ️</span>
     About
   </a>
 
-  <a class="nav" href="admin.html">
+  <a class="nav" href="#">
     <span>⚙️</span>
     Admin
   </a>
@@ -407,16 +407,21 @@ const searchInput = document.getElementById("searchInput");
 
 let allSystems = [];
 
-const today = new Date();
+function updateTodayClock(){
+  const today = new Date();
 
-document.getElementById("today").innerHTML =
-  "आज: " +
-  today.toLocaleDateString("ne-NP") +
-  " • " +
-  today.toLocaleTimeString("ne-NP",{
-    hour:'2-digit',
-    minute:'2-digit'
-  });
+  document.getElementById("today").innerHTML =
+    "आज: " +
+    today.toLocaleDateString("ne-NP") +
+    " • " +
+    today.toLocaleTimeString("ne-NP",{
+      hour:'2-digit',
+      minute:'2-digit'
+    });
+}
+
+updateTodayClock();
+setInterval(updateTodayClock, 1000);
 
 
 // CACHE LOAD
