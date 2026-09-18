@@ -702,9 +702,57 @@
        2. LOAD ABOUT DATA
        =================================================== */
 
+    const ABOUT_LOCAL_CACHE_KEY =
+      "district325f_about_fast_v1";
+
+    function applyAboutData(data) {
+      if (!data) {
+        return;
+      }
+
+      applySettings(
+        data.settings
+      );
+
+      renderOfficers(
+        data.officers || [],
+        data.currentLY || ""
+      );
+    }
+
+
+    /*
+     * FAST FIRST PAINT:
+     * Show the last successful About data immediately, then refresh
+     * silently from Apps Script. No existing officer/search UI changes.
+     */
+    let hasLocalAboutData = false;
+
+    try {
+      const cachedAbout =
+        localStorage.getItem(
+          ABOUT_LOCAL_CACHE_KEY
+        );
+
+      if (cachedAbout) {
+        applyAboutData(
+          JSON.parse(cachedAbout)
+        );
+
+        hasLocalAboutData = true;
+      }
+    } catch (error) {
+      hasLocalAboutData = false;
+    }
+
+
     fetch(
       API_URL +
-      "?action=about"
+      "?action=about&_=" +
+      Date.now(),
+      {
+        cache: "no-store"
+      }
     )
       .then(
         function(response) {
@@ -713,26 +761,30 @@
       )
       .then(
         function(data) {
-          applySettings(
-            data.settings
-          );
+          applyAboutData(data);
 
-          renderOfficers(
-            data.officers || [],
-            data.currentLY || ""
-          );
+          try {
+            localStorage.setItem(
+              ABOUT_LOCAL_CACHE_KEY,
+              JSON.stringify(data)
+            );
+          } catch (error) {
+            // Local cache is optional.
+          }
         }
       )
       .catch(
         function() {
-          document
-            .getElementById(
-              "officers"
-            )
-            .innerHTML =
-              '<div class="empty">' +
-              'Officer data load हुन सकेन ।' +
-              '</div>';
+          if (!hasLocalAboutData) {
+            document
+              .getElementById(
+                "officers"
+              )
+              .innerHTML =
+                '<div class="empty">' +
+                'Officer data load हुन सकेन ।' +
+                '</div>';
+          }
         }
       );
 
